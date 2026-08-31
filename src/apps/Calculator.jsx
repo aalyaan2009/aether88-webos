@@ -6,7 +6,7 @@ export default function Calculator() {
 
   const calculate = () => {
     try {
-      // Deliberately restricted to calculator characters.
+      
       if (!/^[0-9+\-*/().% ]+$/.test(value)) {
         setValue("ERROR");
         return;

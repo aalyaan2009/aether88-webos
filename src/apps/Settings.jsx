@@ -1,117 +1,94 @@
-export default function Settings({
-  dark,
-  setDark
-}) {
+import { useState, useEffect } from "react";
+import { Palette, HardDrive, RefreshCw, Cpu, Monitor } from "lucide-react";
+
+export default function Settings() {
+  const [accent, setAccent] = useState(() => localStorage.getItem("aether_accent") || "#c85a32");
+  const [storageUsed, setStorageUsed] = useState("0 KB");
+
+  const accents = [
+    { name: "Rust", value: "#c85a32" },
+    { name: "Emerald", value: "#059669" },
+    { name: "Cobalt", value: "#2563eb" },
+    { name: "Amethyst", value: "#7c3aed" },
+    { name: "Amber", value: "#d97706" }
+  ];
+
+  useEffect(() => {
+    
+    let totalBytes = 0;
+    for (let key in localStorage) {
+      if (localStorage.hasOwnProperty(key)) {
+        totalBytes += (localStorage[key].length + key.length) * 2;
+      }
+    }
+    setStorageUsed((totalBytes / 1024).toFixed(2) + " KB");
+  }, []);
+
+  const changeAccent = (color) => {
+    setAccent(color);
+    localStorage.setItem("aether_accent", color);
+    document.documentElement.style.setProperty("--accent", color);
+  };
+
+  const handleResetOS = () => {
+    if (confirm("Reset AETHER OS? This will clear open app history, notes, and targets.")) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
   return (
-    <div className="max-w-2xl">
-      <p className="
-        font-system
-        text-[9px]
-        uppercase
-        tracking-[.2em]
-        opacity-50
-      ">
-        AETHER CONTROL CENTER
-      </p>
-
-      <h2 className="
-        font-editorial
-        text-4xl
-        font-black
-        uppercase
-        mb-8
-      ">
-        Settings
-      </h2>
-
-      <section className="
-        border
-        p-5
-        flex
-        items-center
-        justify-between
-      ">
-        <div>
-          <h3 className="font-editorial font-bold uppercase">
-            Appearance
-          </h3>
-
-          <p className="text-sm opacity-60 mt-1">
-            Switch between the paper and charcoal interfaces.
-          </p>
+    <div className="h-full p-4 font-system space-y-5 text-xs overflow-y-auto select-text" style={{ color: "var(--ink)" }}>
+      
+      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+        <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider">
+          <Palette size={14} /> System Accent Theme
         </div>
+        <p className="text-[11px] opacity-70">Select active highlight color for controls and window focus.</p>
+        <div className="flex items-center gap-2 pt-1">
+          {accents.map((a) => (
+            <button
+              key={a.name}
+              onClick={() => changeAccent(a.value)}
+              className="w-6 h-6 rounded-full border-2 transition-transform active:scale-95"
+              style={{
+                backgroundColor: a.value,
+                borderColor: accent === a.value ? "var(--ink)" : "transparent"
+              }}
+              title={a.name}
+            />
+          ))}
+        </div>
+      </div>
 
+      
+      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+        <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider">
+          <HardDrive size={14} /> Persistent Storage Memory
+        </div>
+        <div className="flex justify-between items-center text-[11px] py-1 border-b" style={{ borderColor: "var(--border-color)" }}>
+          <span className="opacity-70">LocalStorage Used</span>
+          <span className="font-mono font-bold">{storageUsed}</span>
+        </div>
+        <div className="flex justify-between items-center text-[11px] py-1">
+          <span className="opacity-70">Screen Resolution</span>
+          <span className="font-mono">{window.innerWidth} x {window.innerHeight}</span>
+        </div>
+      </div>
+
+      
+      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+        <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider text-red-500">
+          <RefreshCw size={14} /> System Recovery
+        </div>
+        <p className="text-[11px] opacity-70">Wipe saved browser state and restore default OS layout.</p>
         <button
-          onClick={() => setDark(!dark)}
-          className="
-            bg-[#c85a32]
-            text-white
-            px-4
-            py-2
-            font-system
-            text-xs
-            uppercase
-          "
+          onClick={handleResetOS}
+          className="px-3 py-1.5 bg-red-600 text-white rounded-md text-[11px] font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"
         >
-          {dark
-            ? "Light Mode"
-            : "Dark Mode"}
+          Factory Reset OS
         </button>
-      </section>
-
-      <section className="
-        border
-        p-5
-        mt-4
-      ">
-        <div className="
-          font-system
-          text-[9px]
-          uppercase
-          tracking-widest
-          opacity-50
-        ">
-          System
-        </div>
-
-        <div className="
-          grid
-          grid-cols-3
-          gap-4
-          mt-4
-          text-center
-        ">
-          <div>
-            <strong className="text-2xl">
-              45
-            </strong>
-
-            <div className="text-[9px] uppercase opacity-50">
-              Apps
-            </div>
-          </div>
-
-          <div>
-            <strong className="text-2xl">
-              1.0
-            </strong>
-
-            <div className="text-[9px] uppercase opacity-50">
-              Version
-            </div>
-          </div>
-
-          <div>
-            <strong className="text-2xl text-[#c85a32]">
-              ●
-            </strong>
-
-            <div className="text-[9px] uppercase opacity-50">
-              Online
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

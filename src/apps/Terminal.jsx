@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export default function Terminal({
-  openApp
-}) {
-  const [history, setHistory] =
-    useState([
-      "AETHER OS TERMINAL",
-      "Version 1.0.0",
-      "",
-      "Type 'help' for available commands."
-    ]);
+export default function Terminal({ openApp }) {
+  const [history, setHistory] = useState([
+    "AETHER OS TERMINAL",
+    "Version 1.0.0",
+    "",
+    "Type 'help' for available commands."
+  ]);
 
-  const [input, setInput] =
-    useState("");
+  const [input, setInput] = useState("");
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [history]);
 
   const execute = (event) => {
     if (event.key !== "Enter") return;
@@ -44,51 +45,30 @@ export default function Terminal({
         return;
 
       case "date":
-        output = [
-          new Date().toString()
-        ];
+        output = [new Date().toString()];
         break;
 
       case "apps":
-        output = [
-          "45 applications installed."
-        ];
+        output = ["45 applications installed."];
         break;
 
       case "whoami":
-        output = [
-          "guest@aether"
-        ];
+        output = ["guest@aether"];
         break;
 
       case "version":
-        output = [
-          "AETHER OS 1.0.0"
-        ];
+        output = ["AETHER OS 1.0.0"];
         break;
 
       default:
-        if (
-          command
-            .toLowerCase()
-            .startsWith("open ")
-        ) {
-          const app =
-            command.substring(5).trim();
+        if (command.toLowerCase().startsWith("open ")) {
+          const app = command.substring(5).trim();
 
-          openApp(
-            app
-              .toLowerCase()
-              .replaceAll(" ", "-")
-          );
+          openApp(app.toLowerCase().replaceAll(" ", "-"));
 
-          output = [
-            `Launching ${app}...`
-          ];
+          output = [`Launching ${app}...`];
         } else {
-          output = [
-            `Command not found: ${command}`
-          ];
+          output = [`Command not found: ${command}`];
         }
     }
 
@@ -103,44 +83,33 @@ export default function Terminal({
 
   return (
     <div
-      className="
-        h-full
-        bg-[#171717]
-        text-[#f3efe6]
-        p-4
-        font-system
-        text-xs
-        overflow-auto
-      "
+      className="h-full p-4 font-mono text-xs overflow-auto select-text"
+      style={{
+        backgroundColor: "var(--paper)",
+        color: "var(--ink)"
+      }}
     >
-      {history.map(
-        (line, index) => (
-          <div key={index}>
-            {line}
-          </div>
-        )
-      )}
+      {history.map((line, index) => (
+        <div key={index} className="whitespace-pre-wrap leading-relaxed">
+          {line}
+        </div>
+      ))}
 
-      <div className="flex mt-2">
-        <span className="text-[#c85a32] mr-2">
+      <div className="flex mt-2 items-center">
+        <span className="mr-2 font-bold" style={{ color: "var(--accent)" }}>
           guest@aether:~$
         </span>
 
         <input
           autoFocus
           value={input}
-          onChange={(e) =>
-            setInput(e.target.value)
-          }
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={execute}
-          className="
-            flex-1
-            bg-transparent
-            outline-none
-            text-white
-          "
+          className="flex-1 bg-transparent outline-none border-none font-mono"
+          style={{ color: "var(--ink)" }}
         />
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 }

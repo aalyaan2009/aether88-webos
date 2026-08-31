@@ -31,9 +31,7 @@ export default function Wallpaper({ dark }) {
       ctx.fillStyle = base;
       ctx.fillRect(0, 0, width, height);
 
-      /*
-        Subtle animated editorial grid.
-      */
+      
 
       const spacing = 64;
 
