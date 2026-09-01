@@ -84,10 +84,7 @@ export default function Wallpaper({ dark }) {
         ctx.stroke();
       }
 
-      /*
-        Large editorial accent.
-      */
-
+      
       const gradient =
         ctx.createRadialGradient(
           width * 0.72,

@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-accent: #c85a32;
+  --color-accent-dark: #a94725;
+  --font-editorial: Georgia, "Times New Roman", serif;
+  --font-system: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
 :root {
   --serif: Georgia, "Times New Roman", serif;
   --mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -8,7 +15,6 @@
   --accent-dark: #a94725;
   --success: #4ade80;
 }
-
 
 [data-theme="light"], .os-light, :root[data-theme="light"] {
   --bg-primary: #ffffff;
@@ -29,7 +35,6 @@
   --taskbar-bg: rgba(255, 255, 255, 0.9);
   --shadow-color: rgba(0, 0, 0, 0.15);
 }
-
 
 [data-theme="dark"], .os-dark, :root[data-theme="dark"] {
   --bg-primary: #000000;
