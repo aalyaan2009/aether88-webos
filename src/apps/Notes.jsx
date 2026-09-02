@@ -1,11 +1,7 @@
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export default function Notes() {
-  const [notes, setNotes] =
-    useLocalStorage(
-      "aether-notes",
-      ""
-    );
+  const [notes, setNotes] = useLocalStorage("aether-notes", "");
 
   return (
     <div className="h-full flex flex-col">
@@ -27,23 +23,9 @@ export default function Notes() {
 
       <textarea
         value={notes}
-        onChange={(e) =>
-          setNotes(e.target.value)
-        }
+        onChange={(e) => setNotes(e.target.value)}
         placeholder="Begin writing..."
-        className="
-          flex-1
-          w-full
-          resize-none
-          border
-          border-current
-          bg-transparent
-          p-5
-          outline-none
-          font-editorial
-          text-lg
-          leading-relaxed
-        "
+        className="flex-1 w-full resize-none border border-current bg-transparent p-5 outline-none font-editorial text-lg leading-relaxed"
       />
 
       <div className="font-system text-[9px] opacity-50 mt-2">

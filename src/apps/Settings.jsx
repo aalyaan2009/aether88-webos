@@ -14,7 +14,6 @@ export default function Settings() {
   ];
 
   useEffect(() => {
-    
     let totalBytes = 0;
     for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
@@ -38,13 +37,22 @@ export default function Settings() {
   };
 
   return (
-    <div className="h-full p-4 font-system space-y-5 text-xs overflow-y-auto select-text" style={{ color: "var(--ink)" }}>
-      
-      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+    <div 
+      className="h-full p-4 font-system space-y-5 text-xs overflow-y-auto select-text" 
+      style={{ color: "var(--ink)" }}
+    >
+      <div 
+        className="p-3 border rounded-xl space-y-2" 
+        style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}
+      >
         <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider">
           <Palette size={14} /> System Accent Theme
         </div>
-        <p className="text-[11px] opacity-70">Select active highlight color for controls and window focus.</p>
+        
+        <p className="text-[11px] opacity-70">
+          Select active highlight color for controls and window focus.
+        </p>
+
         <div className="flex items-center gap-2 pt-1">
           {accents.map((a) => (
             <button
@@ -61,27 +69,40 @@ export default function Settings() {
         </div>
       </div>
 
-      
-      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+      <div 
+        className="p-3 border rounded-xl space-y-2" 
+        style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}
+      >
         <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider">
           <HardDrive size={14} /> Persistent Storage Memory
         </div>
-        <div className="flex justify-between items-center text-[11px] py-1 border-b" style={{ borderColor: "var(--border-color)" }}>
+
+        <div 
+          className="flex justify-between items-center text-[11px] py-1 border-b" 
+          style={{ borderColor: "var(--border-color)" }}
+        >
           <span className="opacity-70">LocalStorage Used</span>
           <span className="font-mono font-bold">{storageUsed}</span>
         </div>
+
         <div className="flex justify-between items-center text-[11px] py-1">
           <span className="opacity-70">Screen Resolution</span>
           <span className="font-mono">{window.innerWidth} x {window.innerHeight}</span>
         </div>
       </div>
 
-      
-      <div className="p-3 border rounded-xl space-y-2" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}>
+      <div 
+        className="p-3 border rounded-xl space-y-2" 
+        style={{ borderColor: "var(--border-color)", backgroundColor: "var(--paper-deep)" }}
+      >
         <div className="flex items-center gap-2 font-bold uppercase text-[10px] tracking-wider text-red-500">
           <RefreshCw size={14} /> System Recovery
         </div>
-        <p className="text-[11px] opacity-70">Wipe saved browser state and restore default OS layout.</p>
+
+        <p className="text-[11px] opacity-70">
+          Wipe saved browser state and restore default OS layout.
+        </p>
+
         <button
           onClick={handleResetOS}
           className="px-3 py-1.5 bg-red-600 text-white rounded-md text-[11px] font-bold uppercase tracking-wider hover:bg-red-700 transition-colors"

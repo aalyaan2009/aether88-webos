@@ -16,7 +16,9 @@
   --success: #4ade80;
 }
 
-[data-theme="light"], .os-light, :root[data-theme="light"] {
+[data-theme="light"],
+.os-light,
+:root[data-theme="light"] {
   --bg-primary: #ffffff;
   --bg-secondary: #f4f4f4;
   --bg-window: #ffffff;
@@ -36,7 +38,9 @@
   --shadow-color: rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="dark"], .os-dark, :root[data-theme="dark"] {
+[data-theme="dark"],
+.os-dark,
+:root[data-theme="dark"] {
   --bg-primary: #000000;
   --bg-secondary: #121212;
   --bg-window: #0a0a0a;
@@ -92,7 +96,7 @@ button {
 
 ::selection {
   background: var(--accent);
-  color: white;
+  color: #ffffff;
 }
 
 ::-webkit-scrollbar {

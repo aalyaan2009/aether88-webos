@@ -58,6 +58,7 @@ export default function Dock({
               title={app.name}
             >
               <Icon size={18} />
+
               <span
                 className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[9px] font-system opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity border"
                 style={{
@@ -73,13 +74,21 @@ export default function Dock({
         })}
       </div>
 
-      <div className="w-px h-6 opacity-40 mx-1 shrink-0" style={{ backgroundColor: "var(--border-color)" }} />
+      <div
+        className="w-px h-6 opacity-40 mx-1 shrink-0"
+        style={{ backgroundColor: "var(--border-color)" }}
+      />
 
-      <div className="px-2 font-system text-[10px] tracking-tight shrink-0 select-none font-bold" style={{ color: "var(--ink)" }}>
-        {time.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+      <div
+        className="px-2 font-system text-[10px] tracking-tight shrink-0 select-none font-bold"
+        style={{ color: "var(--ink)" }}
+      >
+        {time.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit"
+        })}
       </div>
 
-      
       <button
         onClick={openCommands}
         className="p-2 border hover:bg-[var(--accent)] hover:text-white transition-colors shrink-0"

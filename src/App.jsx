@@ -98,7 +98,7 @@ export default function App() {
       style={{ backgroundColor: "var(--paper)", color: "var(--ink)" }}
     >
       <Desktop>
-        
+        {/* Top Status Bar */}
         <header
           className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b px-4 py-2 backdrop-blur-md"
           style={{
@@ -119,7 +119,7 @@ export default function App() {
           </button>
         </header>
 
-        
+        {/* Active Application Windows */}
         <div className="relative pt-10 h-full w-full">
           {openApps.map((id) => {
             const app = appLookup[id] || {
@@ -150,33 +150,55 @@ export default function App() {
         </div>
       </Desktop>
 
-      
+      {/* OS Operations & Manual Modal */}
       {guideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div
             className="w-full max-w-md border rounded-2xl p-5 shadow-2xl space-y-4 font-system select-text"
-            style={{ backgroundColor: "var(--paper-deep)", borderColor: "var(--border-color)", color: "var(--ink)" }}
+            style={{
+              backgroundColor: "var(--paper-deep)",
+              borderColor: "var(--border-color)",
+              color: "var(--ink)"
+            }}
           >
-            <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "var(--border-color)" }}>
+            <div
+              className="flex items-center justify-between border-b pb-3"
+              style={{ borderColor: "var(--border-color)" }}
+            >
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
                 <Terminal size={15} /> Terminal & OS Operations
               </div>
-              <button onClick={() => setGuideOpen(false)} className="p-1 hover:opacity-70">
+              <button
+                onClick={() => setGuideOpen(false)}
+                className="p-1 hover:opacity-70"
+              >
                 <X size={16} />
               </button>
             </div>
 
             <p className="text-xs opacity-75 leading-relaxed">
-              <strong>How AETHER OS Works:</strong> System preferences, open window positions, scratchpad notes, and daily tasks auto-sync to your browser’s local storage.
+              <strong>How AETHER OS Works:</strong> System preferences, open
+              window positions, scratchpad notes, and daily tasks auto-sync to
+              your browser’s local storage.
             </p>
 
             <div className="space-y-2">
-              <div className="text-[10px] font-bold uppercase tracking-wider opacity-60">Terminal Command Reference</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider opacity-60">
+                Terminal Command Reference
+              </div>
               <div className="max-h-52 overflow-y-auto space-y-1.5 pr-1 text-xs">
                 {terminalCommands.map((item) => (
-                  <div key={item.cmd} className="p-2 border rounded-lg bg-[var(--paper)] font-mono" style={{ borderColor: "var(--border-color)" }}>
-                    <div className="text-[var(--accent)] font-bold">{item.cmd}</div>
-                    <div className="text-[10px] opacity-70 font-sans mt-0.5">{item.desc}</div>
+                  <div
+                    key={item.cmd}
+                    className="p-2 border rounded-lg bg-[var(--paper)] font-mono"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
+                    <div className="text-[var(--accent)] font-bold">
+                      {item.cmd}
+                    </div>
+                    <div className="text-[10px] opacity-70 font-sans mt-0.5">
+                      {item.desc}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -192,7 +214,7 @@ export default function App() {
         </div>
       )}
 
-      
+      {/* Dock Navigation */}
       <Dock
         openApp={openApp}
         focusApp={focusApp}

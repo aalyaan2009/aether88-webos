@@ -4,10 +4,7 @@ export function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => {
     try {
       const stored = localStorage.getItem(key);
-
-      return stored
-        ? JSON.parse(stored)
-        : initialValue;
+      return stored ? JSON.parse(stored) : initialValue;
     } catch {
       return initialValue;
     }
@@ -15,12 +12,9 @@ export function useLocalStorage(key, initialValue) {
 
   useEffect(() => {
     try {
-      localStorage.setItem(
-        key,
-        JSON.stringify(value)
-      );
+      localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // Ignore storage errors.
+      
     }
   }, [key, value]);
 

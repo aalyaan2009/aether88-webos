@@ -19,7 +19,6 @@ export default function Terminal({ openApp }) {
     if (event.key !== "Enter") return;
 
     const command = input.trim();
-
     if (!command) return;
 
     let output = [];
@@ -65,7 +64,6 @@ export default function Terminal({ openApp }) {
           const app = command.substring(5).trim();
 
           openApp(app.toLowerCase().replaceAll(" ", "-"));
-
           output = [`Launching ${app}...`];
         } else {
           output = [`Command not found: ${command}`];
@@ -109,6 +107,7 @@ export default function Terminal({ openApp }) {
           style={{ color: "var(--ink)" }}
         />
       </div>
+
       <div ref={bottomRef} />
     </div>
   );

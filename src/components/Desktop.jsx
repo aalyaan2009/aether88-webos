@@ -1,5 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw, StickyNote, CheckSquare, Clock, Plus, Trash2, GripHorizontal, ExternalLink } from "lucide-react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  StickyNote,
+  CheckSquare,
+  Clock,
+  Plus,
+  Trash2,
+  GripHorizontal,
+  ExternalLink
+} from "lucide-react";
 
 function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
   const [pos, setPos] = useState(() => {
@@ -119,6 +130,7 @@ export default function Desktop({ children }) {
   }, [isActive, secondsLeft]);
 
   const toggleTimer = () => setIsActive(!isActive);
+  
   const resetTimer = () => {
     setIsActive(false);
     setSecondsLeft(timerMode === "work" ? 25 * 60 : 5 * 60);
@@ -173,9 +185,13 @@ export default function Desktop({ children }) {
         }}
         title="Check out my StudentOS project"
       >
-        <div className="p-2 border rounded-lg group-hover:border-white/40" style={{ borderColor: "var(--border-color)" }}>
+        <div 
+          className="p-2 border rounded-lg group-hover:border-white/40" 
+          style={{ borderColor: "var(--border-color)" }}
+        >
           <ExternalLink size={20} />
         </div>
+
         <span className="text-[10px] font-system font-bold tracking-tight text-center max-w-[100px] leading-tight">
           StudentOS
         </span>
@@ -192,6 +208,7 @@ export default function Desktop({ children }) {
           >
             25m Focus
           </button>
+
           <button
             onClick={() => switchMode("break")}
             className={`px-2 py-0.5 border text-[9px] uppercase tracking-wider ${
@@ -220,6 +237,7 @@ export default function Desktop({ children }) {
           >
             {isActive ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
           </button>
+
           <button
             onClick={resetTimer}
             className="w-8 h-8 flex items-center justify-center border hover:bg-[var(--accent)] hover:text-white transition-colors"
@@ -251,6 +269,7 @@ export default function Desktop({ children }) {
             className="flex-1 bg-transparent border px-2 py-1 text-xs font-system outline-none"
             style={{ borderColor: "var(--border-color)", color: "var(--ink)" }}
           />
+
           <button
             type="submit"
             className="p-1 border hover:bg-[var(--accent)] hover:text-white"
@@ -270,10 +289,12 @@ export default function Desktop({ children }) {
                   onChange={() => toggleTask(task.id)}
                   className="accent-[var(--accent)] cursor-pointer"
                 />
+                
                 <span className={`truncate ${task.done ? "line-through opacity-50" : ""}`}>
                   {task.text}
                 </span>
               </label>
+
               <button
                 onClick={() => deleteTask(task.id)}
                 className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-red-500"

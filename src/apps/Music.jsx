@@ -17,9 +17,11 @@ export default function Music() {
         <div className="font-system text-[9px] uppercase tracking-[0.25em] opacity-50">
           Media deck
         </div>
+
         <div className="mt-3 font-editorial text-4xl font-black uppercase">
           {track.title}
         </div>
+
         <div className="mt-2 font-system text-[10px] uppercase tracking-[0.2em] opacity-70">
           {track.artist}
         </div>
