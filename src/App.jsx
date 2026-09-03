@@ -98,7 +98,7 @@ export default function App() {
       style={{ backgroundColor: "var(--paper)", color: "var(--ink)" }}
     >
       <Desktop>
-        {/* Top Status Bar */}
+        
         <header
           className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b px-4 py-2 backdrop-blur-md"
           style={{
@@ -119,7 +119,7 @@ export default function App() {
           </button>
         </header>
 
-        {/* Active Application Windows */}
+        
         <div className="relative pt-10 h-full w-full">
           {openApps.map((id) => {
             const app = appLookup[id] || {
@@ -150,7 +150,7 @@ export default function App() {
         </div>
       </Desktop>
 
-      {/* OS Operations & Manual Modal */}
+      
       {guideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div
@@ -214,7 +214,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Dock Navigation */}
+      
       <Dock
         openApp={openApp}
         focusApp={focusApp}

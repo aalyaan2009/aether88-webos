@@ -1,5 +1,5 @@
 # Aether88 WebOS - Minimalist Web Operating System
-Aether 88 WebOS is a retro inspired, desktop styled web application built to simulate an interactive operating system environment with draggable productivity widgets, persistent storage and quick application shorcuts.
+Aether 88 WebOS is a retro inspired desktop styled web application built to simulate an interactive operating system environment with draggable productivity widgets, persistent storage and quick application shorcuts.
 
 ---
 
