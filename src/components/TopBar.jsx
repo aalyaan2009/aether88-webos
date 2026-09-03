@@ -6,13 +6,17 @@ export default function TopBar({ dark, setDark, openLauncher }) {
   const date = now.toLocaleDateString(undefined, {
     day: "2-digit",
     month: "short",
-    year: "numeric"
+    year: "numeric",
   });
 
   const time = now.toLocaleTimeString(undefined, {
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
   });
+
+  const toggleDarkMode = () => {
+    setDark(!dark);
+  };
 
   return (
     <header
@@ -21,7 +25,7 @@ export default function TopBar({ dark, setDark, openLauncher }) {
         background: dark
           ? "rgba(18,18,18,.88)"
           : "rgba(243,239,230,.88)",
-        borderColor: dark ? "#333" : "#171717"
+        borderColor: dark ? "#333" : "#171717",
       }}
     >
       <div className="flex items-center gap-5">
@@ -53,7 +57,7 @@ export default function TopBar({ dark, setDark, openLauncher }) {
         </button>
 
         <button
-          onClick={() => setDark(!dark)}
+          onClick={toggleDarkMode}
           className="border px-3 py-1.5 text-xs font-system uppercase tracking-wider hover:bg-[#c85a32] hover:text-white transition"
         >
           {dark ? (

@@ -5,7 +5,7 @@ export default function Notes() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <p className="font-system text-[9px] uppercase tracking-[.2em] opacity-50">
             Personal workspace
@@ -16,19 +16,19 @@ export default function Notes() {
           </h2>
         </div>
 
-        <div className="font-system text-[9px] opacity-50">
+        <span className="font-system text-[9px] opacity-50">
           AUTOSAVED
-        </div>
+        </span>
       </div>
 
       <textarea
         value={notes}
-        onChange={(e) => setNotes(e.target.value)}
+        onChange={(event) => setNotes(event.target.value)}
         placeholder="Begin writing..."
         className="flex-1 w-full resize-none border border-current bg-transparent p-5 outline-none font-editorial text-lg leading-relaxed"
       />
 
-      <div className="font-system text-[9px] opacity-50 mt-2">
+      <div className="mt-2 font-system text-[9px] opacity-50">
         {notes.length} CHARACTERS
       </div>
     </div>

@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Terminal({ openApp }) {
   const [history, setHistory] = useState([
     "AETHER OS TERMINAL",
     "Version 1.0.0",
     "",
-    "Type 'help' for available commands."
+    "Type 'help' for available commands.",
   ]);
 
   const [input, setInput] = useState("");
@@ -15,17 +15,10 @@ export default function Terminal({ openApp }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history]);
 
-  const execute = (event) => {
-    if (event.key !== "Enter") return;
-
-    const command = input.trim();
-    if (!command) return;
-
-    let output = [];
-
+  const runCommand = (command) => {
     switch (command.toLowerCase()) {
       case "help":
-        output = [
+        return [
           "Available commands:",
           "",
           "help       Show this message",
@@ -34,46 +27,53 @@ export default function Terminal({ openApp }) {
           "apps       List applications",
           "open X     Open application",
           "whoami     Current user",
-          "version    OS version"
+          "version    OS version",
         ];
-        break;
-
-      case "clear":
-        setHistory([]);
-        setInput("");
-        return;
 
       case "date":
-        output = [new Date().toString()];
-        break;
+        return [new Date().toString()];
 
       case "apps":
-        output = ["45 applications installed."];
-        break;
+        return ["45 applications installed."];
 
       case "whoami":
-        output = ["guest@aether"];
-        break;
+        return ["guest@aether"];
 
       case "version":
-        output = ["AETHER OS 1.0.0"];
-        break;
+        return ["AETHER OS 1.0.0"];
 
       default:
         if (command.toLowerCase().startsWith("open ")) {
-          const app = command.substring(5).trim();
+          const appName = command.substring(5).trim();
 
-          openApp(app.toLowerCase().replaceAll(" ", "-"));
-          output = [`Launching ${app}...`];
-        } else {
-          output = [`Command not found: ${command}`];
+          openApp(appName.toLowerCase().replaceAll(" ", "-"));
+
+          return [`Launching ${appName}...`];
         }
+
+        return [`Command not found: ${command}`];
+    }
+  };
+
+  const execute = (event) => {
+    if (event.key !== "Enter") return;
+
+    const command = input.trim();
+
+    if (!command) return;
+
+    if (command.toLowerCase() === "clear") {
+      setHistory([]);
+      setInput("");
+      return;
     }
 
-    setHistory([
-      ...history,
+    const output = runCommand(command);
+
+    setHistory((currentHistory) => [
+      ...currentHistory,
       `guest@aether:~$ ${command}`,
-      ...output
+      ...output,
     ]);
 
     setInput("");
@@ -84,7 +84,7 @@ export default function Terminal({ openApp }) {
       className="h-full p-4 font-mono text-xs overflow-auto select-text"
       style={{
         backgroundColor: "var(--paper)",
-        color: "var(--ink)"
+        color: "var(--ink)",
       }}
     >
       {history.map((line, index) => (
@@ -94,14 +94,17 @@ export default function Terminal({ openApp }) {
       ))}
 
       <div className="flex mt-2 items-center">
-        <span className="mr-2 font-bold" style={{ color: "var(--accent)" }}>
+        <span
+          className="mr-2 font-bold"
+          style={{ color: "var(--accent)" }}
+        >
           guest@aether:~$
         </span>
 
         <input
           autoFocus
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(event) => setInput(event.target.value)}
           onKeyDown={execute}
           className="flex-1 bg-transparent outline-none border-none font-mono"
           style={{ color: "var(--ink)" }}

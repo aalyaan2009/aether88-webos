@@ -1,23 +1,36 @@
 import { useState } from "react";
-import { Globe, ExternalLink, Search, ArrowRight, Bookmark } from "lucide-react";
+import {
+  Globe,
+  ExternalLink,
+  ArrowRight,
+  Bookmark,
+} from "lucide-react";
 
 export default function Browser() {
   const [url, setUrl] = useState("https://google.com");
 
   const handleNavigate = (e) => {
-    e?.preventDefault();
-    
-    if (!url.trim()) return;
-
-    let targetUrl = url.trim();
-    
-    if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
-      targetUrl = targetUrl.includes(".") 
-        ? `https://${targetUrl}` 
-        : `https://www.google.com/search?q=${encodeURIComponent(targetUrl)}`;
+    if (e) {
+      e.preventDefault();
     }
 
-    window.open(targetUrl, "_blank", "noopener,noreferrer");
+    const input = url.trim();
+
+    if (!input) return;
+
+    let destination = input;
+
+    if (!input.startsWith("http://") && !input.startsWith("https://")) {
+      if (input.includes(".")) {
+        destination = `https://${input}`;
+      } else {
+        destination = `https://www.google.com/search?q=${encodeURIComponent(
+          input
+        )}`;
+      }
+    }
+
+    window.open(destination, "_blank", "noopener,noreferrer");
   };
 
   const bookmarks = [
@@ -25,20 +38,21 @@ export default function Browser() {
     { name: "GitHub", url: "https://github.com" },
     { name: "Wikipedia", url: "https://wikipedia.org" },
     { name: "StackOverflow", url: "https://stackoverflow.com" },
-    { name: "DuckDuckGo", url: "https://duckduckgo.com" }
+    { name: "DuckDuckGo", url: "https://duckduckgo.com" },
   ];
 
   return (
-    <div 
-      className="h-full flex flex-col p-4 font-system select-text" 
+    <div
+      className="h-full flex flex-col p-4 font-system select-text"
       style={{ color: "var(--ink)" }}
     >
       <form onSubmit={handleNavigate} className="flex gap-2 mb-4">
-        <div 
+        <div
           className="flex-1 flex items-center gap-2 border px-3 py-1.5 rounded-lg bg-[var(--paper)]"
           style={{ borderColor: "var(--border-color)" }}
         >
           <Globe size={14} className="opacity-50" />
+
           <input
             type="text"
             value={url}
@@ -47,7 +61,7 @@ export default function Browser() {
             className="flex-1 bg-transparent text-xs outline-none"
           />
         </div>
-        
+
         <button
           type="submit"
           className="px-3 py-1.5 border text-xs flex items-center gap-1 rounded-lg hover:bg-[var(--accent)] hover:text-white transition-colors"
@@ -58,16 +72,19 @@ export default function Browser() {
         </button>
       </form>
 
-      <div 
+      <div
         className="flex-1 border border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3"
         style={{ borderColor: "var(--border-color)" }}
       >
         <Globe size={36} className="opacity-40 animate-pulse" />
+
         <h3 className="text-sm font-bold tracking-wider uppercase">
           External Web Gateway
         </h3>
+
         <p className="text-xs opacity-70 max-w-sm leading-relaxed">
-          To bypass browser iframe block rules, navigation redirects external sites directly to a clean target tab.
+          To bypass browser iframe block rules, navigation redirects external
+          sites directly to a clean target tab.
         </p>
 
         <button
@@ -79,26 +96,31 @@ export default function Browser() {
         </button>
       </div>
 
-      <div 
-        className="mt-4 pt-3 border-t" 
+      <div
+        className="mt-4 pt-3 border-t"
         style={{ borderColor: "var(--border-color)" }}
       >
         <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider opacity-60 mb-2">
-          <Bookmark size={12} /> Quick Links
+          <Bookmark size={12} />
+          Quick Links
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
-          {bookmarks.map((bm) => (
+          {bookmarks.map((bookmark) => (
             <button
-              key={bm.name}
+              key={bookmark.name}
               onClick={() => {
-                setUrl(bm.url);
-                window.open(bm.url, "_blank", "noopener,noreferrer");
+                setUrl(bookmark.url);
+                window.open(
+                  bookmark.url,
+                  "_blank",
+                  "noopener,noreferrer"
+                );
               }}
               className="px-2.5 py-1 border text-[11px] rounded-md hover:bg-[var(--accent)] hover:text-white transition-colors"
               style={{ borderColor: "var(--border-color)" }}
             >
-              {bm.name}
+              {bookmark.name}
             </button>
           ))}
         </div>

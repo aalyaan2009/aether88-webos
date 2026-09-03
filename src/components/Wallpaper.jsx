@@ -6,39 +6,33 @@ export default function Wallpaper({ dark }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
 
+    const ctx = canvas.getContext("2d");
     let animationFrame;
 
-    const resize = () => {
+    const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
-    resize();
-    window.addEventListener("resize", resize);
-
     const render = (time) => {
-      const width = canvas.width;
-      const height = canvas.height;
+      const { width, height } = canvas;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Background fill
-      const base = dark ? "#121212" : "#f3efe6";
-      ctx.fillStyle = base;
+      // Background
+      ctx.fillStyle = dark ? "#121212" : "#f3efe6";
       ctx.fillRect(0, 0, width, height);
 
-      // Animated grid pattern
+      // Moving grid
       const spacing = 64;
+      const shift = (time * 0.01) % spacing;
+
       ctx.lineWidth = 1;
       ctx.strokeStyle = dark
         ? "rgba(255,255,255,0.035)"
         : "rgba(23,23,23,0.045)";
 
-      const shift = (time * 0.01) % spacing;
-
-      // Vertical lines
       for (let x = -spacing; x < width + spacing; x += spacing) {
         ctx.beginPath();
         ctx.moveTo(x + shift, 0);
@@ -46,7 +40,6 @@ export default function Wallpaper({ dark }) {
         ctx.stroke();
       }
 
-      // Horizontal lines
       for (let y = -spacing; y < height + spacing; y += spacing) {
         ctx.beginPath();
         ctx.moveTo(0, y + shift * 0.4);
@@ -54,7 +47,7 @@ export default function Wallpaper({ dark }) {
         ctx.stroke();
       }
 
-      // Radial ambient glow accent
+      // Accent glow
       const gradient = ctx.createRadialGradient(
         width * 0.72,
         height * 0.28,
@@ -76,13 +69,21 @@ export default function Wallpaper({ dark }) {
       animationFrame = requestAnimationFrame(render);
     };
 
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
     animationFrame = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", resizeCanvas);
     };
   }, [dark]);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-20" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 -z-20"
+    />
+  );
 }

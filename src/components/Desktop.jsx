@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Play,
   Pause,
@@ -9,7 +9,7 @@ import {
   Plus,
   Trash2,
   GripHorizontal,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 
 function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
@@ -18,63 +18,66 @@ function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
     return saved ? JSON.parse(saved) : initialPos;
   });
 
-  const isDragging = useRef(false);
+  const dragging = useRef(false);
   const dragOffset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     localStorage.setItem(`aether_widget_${id}_pos`, JSON.stringify(pos));
   }, [pos, id]);
 
-  const handleMouseDown = (e) => {
-    e.stopPropagation();
-    isDragging.current = true;
+  const startDragging = (event) => {
+    event.stopPropagation();
+
+    dragging.current = true;
     dragOffset.current = {
-      x: e.clientX - pos.x,
-      y: e.clientY - pos.y
+      x: event.clientX - pos.x,
+      y: event.clientY - pos.y,
     };
 
-    const handleMouseMove = (e) => {
-      if (!isDragging.current) return;
+    const move = (event) => {
+      if (!dragging.current) return;
+
       setPos({
-        x: Math.max(10, e.clientX - dragOffset.current.x),
-        y: Math.max(50, e.clientY - dragOffset.current.y)
+        x: Math.max(10, event.clientX - dragOffset.current.x),
+        y: Math.max(50, event.clientY - dragOffset.current.y),
       });
     };
 
-    const handleMouseUp = () => {
-      isDragging.current = false;
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+    const stopDragging = () => {
+      dragging.current = false;
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", stopDragging);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", stopDragging);
   };
 
   return (
     <div
+      className="absolute w-72 border backdrop-blur-md shadow-lg flex flex-col z-10 pointer-events-auto"
       style={{
         left: `${pos.x}px`,
         top: `${pos.y}px`,
         backgroundColor: "var(--paper-deep)",
         borderColor: "var(--border-color)",
-        color: "var(--ink)"
+        color: "var(--ink)",
       }}
-      className="absolute w-72 border backdrop-blur-md shadow-lg flex flex-col z-10 pointer-events-auto"
     >
       <div
         className="flex items-center justify-between px-3 py-2 border-b select-none"
         style={{
           borderColor: "var(--border-color)",
-          backgroundColor: "color-mix(in srgb, var(--paper) 60%, transparent)"
+          backgroundColor: "color-mix(in srgb, var(--paper) 60%, transparent)",
         }}
       >
         <div className="flex items-center gap-1.5 text-[10px] font-system uppercase tracking-wider font-bold">
-          <Icon size={13} /> {title}
+          <Icon size={13} />
+          {title}
         </div>
 
         <button
-          onMouseDown={handleMouseDown}
+          onMouseDown={startDragging}
           className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-[var(--accent)] hover:text-white transition-colors"
           title="Drag Widget"
         >
@@ -94,43 +97,58 @@ export default function Desktop({ children }) {
 
   const [note, setNote] = useState(() => {
     const saved = localStorage.getItem("aether_scratchpad_note");
+
     return saved !== null
       ? JSON.parse(saved)
       : "• Review CS project builds\n• Update web OS components\n• Draft daily study notes";
+  });
+
+  const [newTask, setNewTask] = useState("");
+
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem("aether_daily_tasks");
+
+    return saved !== null
+      ? JSON.parse(saved)
+      : [
+          { id: 1, text: "Fix window drag transitions", done: true },
+          { id: 2, text: "Theme terminal light mode", done: true },
+          {
+            id: 3,
+            text: "Configure desktop productivity widgets",
+            done: false,
+          },
+        ];
   });
 
   useEffect(() => {
     localStorage.setItem("aether_scratchpad_note", JSON.stringify(note));
   }, [note]);
 
-  const [newTask, setNewTask] = useState("");
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("aether_daily_tasks");
-    return saved !== null
-      ? JSON.parse(saved)
-      : [
-          { id: 1, text: "Fix window drag transitions", done: true },
-          { id: 2, text: "Theme terminal light mode", done: true },
-          { id: 3, text: "Configure desktop productivity widgets", done: false }
-        ];
-  });
-
   useEffect(() => {
     localStorage.setItem("aether_daily_tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   useEffect(() => {
-    let interval = null;
-    if (isActive && secondsLeft > 0) {
-      interval = setInterval(() => setSecondsLeft((prev) => prev - 1), 1000);
-    } else if (secondsLeft === 0) {
-      setIsActive(false);
+    if (!isActive || secondsLeft <= 0) {
+      if (secondsLeft === 0) {
+        setIsActive(false);
+      }
+
+      return;
     }
-    return () => clearInterval(interval);
+
+    const timer = setInterval(() => {
+      setSecondsLeft((current) => current - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, [isActive, secondsLeft]);
 
-  const toggleTimer = () => setIsActive(!isActive);
-  
+  const toggleTimer = () => {
+    setIsActive((active) => !active);
+  };
+
   const resetTimer = () => {
     setIsActive(false);
     setSecondsLeft(timerMode === "work" ? 25 * 60 : 5 * 60);
@@ -142,25 +160,46 @@ export default function Desktop({ children }) {
     setSecondsLeft(mode === "work" ? 25 * 60 : 5 * 60);
   };
 
-  const formatTime = (secs) => {
-    const mins = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${mins.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const toggleTask = (id) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task
+      )
+    );
   };
 
-  const addTask = (e) => {
-    e.preventDefault();
-    if (!newTask.trim()) return;
-    setTasks([...tasks, { id: Date.now(), text: newTask.trim(), done: false }]);
+  const addTask = (event) => {
+    event.preventDefault();
+
+    const text = newTask.trim();
+
+    if (!text) return;
+
+    setTasks((currentTasks) => [
+      ...currentTasks,
+      {
+        id: Date.now(),
+        text,
+        done: false,
+      },
+    ]);
+
     setNewTask("");
   };
 
   const deleteTask = (id) => {
-    setTasks(tasks.filter((t) => t.id !== id));
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== id)
+    );
   };
 
   return (
@@ -169,8 +208,9 @@ export default function Desktop({ children }) {
       style={{
         backgroundColor: "var(--paper)",
         color: "var(--ink)",
-        backgroundImage: `radial-gradient(var(--border-color) 1px, transparent 1px)`,
-        backgroundSize: "24px 24px"
+        backgroundImage:
+          "radial-gradient(var(--border-color) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
       }}
     >
       <a
@@ -181,12 +221,12 @@ export default function Desktop({ children }) {
         style={{
           backgroundColor: "var(--paper-deep)",
           borderColor: "var(--border-color)",
-          color: "var(--ink)"
+          color: "var(--ink)",
         }}
         title="Check out my StudentOS project"
       >
-        <div 
-          className="p-2 border rounded-lg group-hover:border-white/40" 
+        <div
+          className="p-2 border rounded-lg group-hover:border-white/40"
           style={{ borderColor: "var(--border-color)" }}
         >
           <ExternalLink size={20} />
@@ -197,12 +237,19 @@ export default function Desktop({ children }) {
         </span>
       </a>
 
-      <DraggableWidget id="timer" title="Focus Timer" icon={Clock} initialPos={{ x: 24, y: 64 }}>
+      <DraggableWidget
+        id="timer"
+        title="Focus Timer"
+        icon={Clock}
+        initialPos={{ x: 24, y: 64 }}
+      >
         <div className="flex items-center justify-between text-[10px] font-system mb-2">
           <button
             onClick={() => switchMode("work")}
             className={`px-2 py-0.5 border text-[9px] uppercase tracking-wider ${
-              timerMode === "work" ? "bg-[var(--accent)] text-white font-bold" : ""
+              timerMode === "work"
+                ? "bg-[var(--accent)] text-white font-bold"
+                : ""
             }`}
             style={{ borderColor: "var(--border-color)" }}
           >
@@ -212,7 +259,9 @@ export default function Desktop({ children }) {
           <button
             onClick={() => switchMode("break")}
             className={`px-2 py-0.5 border text-[9px] uppercase tracking-wider ${
-              timerMode === "break" ? "bg-[var(--accent)] text-white font-bold" : ""
+              timerMode === "break"
+                ? "bg-[var(--accent)] text-white font-bold"
+                : ""
             }`}
             style={{ borderColor: "var(--border-color)" }}
           >
@@ -230,18 +279,27 @@ export default function Desktop({ children }) {
             className="w-8 h-8 flex items-center justify-center border hover:bg-[var(--accent)] hover:text-white transition-colors"
             style={{
               borderColor: "var(--border-color)",
-              backgroundColor: isActive ? "var(--accent)" : "transparent",
-              color: isActive ? "#ffffff" : "var(--ink)"
+              backgroundColor: isActive
+                ? "var(--accent)"
+                : "transparent",
+              color: isActive ? "#ffffff" : "var(--ink)",
             }}
             title={isActive ? "Pause Timer" : "Start Timer"}
           >
-            {isActive ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
+            {isActive ? (
+              <Pause size={14} />
+            ) : (
+              <Play size={14} className="ml-0.5" />
+            )}
           </button>
 
           <button
             onClick={resetTimer}
             className="w-8 h-8 flex items-center justify-center border hover:bg-[var(--accent)] hover:text-white transition-colors"
-            style={{ borderColor: "var(--border-color)", color: "var(--ink)" }}
+            style={{
+              borderColor: "var(--border-color)",
+              color: "var(--ink)",
+            }}
             title="Reset Timer"
           >
             <RotateCcw size={14} />
@@ -249,25 +307,41 @@ export default function Desktop({ children }) {
         </div>
       </DraggableWidget>
 
-      <DraggableWidget id="scratchpad" title="Quick Scratchpad" icon={StickyNote} initialPos={{ x: 24, y: 250 }}>
+      <DraggableWidget
+        id="scratchpad"
+        title="Quick Scratchpad"
+        icon={StickyNote}
+        initialPos={{ x: 24, y: 250 }}
+      >
         <textarea
           value={note}
-          onChange={(e) => setNote(e.target.value)}
+          onChange={(event) => setNote(event.target.value)}
           className="w-full h-28 bg-transparent resize-none outline-none font-mono text-xs leading-relaxed border p-2"
-          style={{ borderColor: "var(--border-color)", color: "var(--ink)" }}
+          style={{
+            borderColor: "var(--border-color)",
+            color: "var(--ink)",
+          }}
           placeholder="Write quick notes..."
         />
       </DraggableWidget>
 
-      <DraggableWidget id="targets" title="Daily Targets" icon={CheckSquare} initialPos={{ x: 24, y: 430 }}>
+      <DraggableWidget
+        id="targets"
+        title="Daily Targets"
+        icon={CheckSquare}
+        initialPos={{ x: 24, y: 430 }}
+      >
         <form onSubmit={addTask} className="flex gap-1 mb-2">
           <input
             type="text"
             value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
+            onChange={(event) => setNewTask(event.target.value)}
             placeholder="Add target..."
             className="flex-1 bg-transparent border px-2 py-1 text-xs font-system outline-none"
-            style={{ borderColor: "var(--border-color)", color: "var(--ink)" }}
+            style={{
+              borderColor: "var(--border-color)",
+              color: "var(--ink)",
+            }}
           />
 
           <button
@@ -281,7 +355,10 @@ export default function Desktop({ children }) {
 
         <div className="max-h-32 overflow-y-auto space-y-1.5 pr-1 font-system text-xs">
           {tasks.map((task) => (
-            <div key={task.id} className="flex items-center justify-between group p-1">
+            <div
+              key={task.id}
+              className="flex items-center justify-between group p-1"
+            >
               <label className="flex items-center gap-2 cursor-pointer truncate flex-1">
                 <input
                   type="checkbox"
@@ -289,8 +366,12 @@ export default function Desktop({ children }) {
                   onChange={() => toggleTask(task.id)}
                   className="accent-[var(--accent)] cursor-pointer"
                 />
-                
-                <span className={`truncate ${task.done ? "line-through opacity-50" : ""}`}>
+
+                <span
+                  className={`truncate ${
+                    task.done ? "line-through opacity-50" : ""
+                  }`}
+                >
                   {task.text}
                 </span>
               </label>

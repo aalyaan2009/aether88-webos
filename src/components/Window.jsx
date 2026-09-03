@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Maximize2, Minimize2, X } from "lucide-react";
 
 export default function Window({
@@ -7,7 +7,7 @@ export default function Window({
   children,
   onClose,
   onFocus,
-  active
+  active,
 }) {
   const [maximized, setMaximized] = useState(false);
   const [pos, setPos] = useState({ x: 120, y: 80 });
@@ -21,71 +21,103 @@ export default function Window({
     posX: 0,
     posY: 0,
     startW: 0,
-    startH: 0
+    startH: 0,
   });
 
-  const startDrag = (e) => {
-    if (maximized || e.target.closest("button")) return;
+  const startDrag = (event) => {
+    if (maximized || event.target.closest("button")) return;
+
     setIsDragging(true);
+
     dragRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
       posX: pos.x,
-      posY: pos.y
+      posY: pos.y,
     };
   };
 
-  const startResize = (e) => {
-    e.stopPropagation();
+  const startResize = (event) => {
+    event.stopPropagation();
+
     if (maximized) return;
+
     setIsResizing(true);
+
     dragRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
       startW: size.width,
-      startH: size.height
+      startH: size.height,
     };
   };
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    if (!isDragging && !isResizing) return;
+
+    const handleMouseMove = (event) => {
       if (isDragging) {
         requestAnimationFrame(() => {
           setPos({
-            x: Math.max(0, dragRef.current.posX + (e.clientX - dragRef.current.startX)),
-            y: Math.max(0, dragRef.current.posY + (e.clientY - dragRef.current.startY))
+            x: Math.max(
+              0,
+              dragRef.current.posX +
+                (event.clientX - dragRef.current.startX)
+            ),
+            y: Math.max(
+              0,
+              dragRef.current.posY +
+                (event.clientY - dragRef.current.startY)
+            ),
           });
         });
-      } else if (isResizing) {
+
+        return;
+      }
+
+      if (isResizing) {
         requestAnimationFrame(() => {
           setSize({
-            width: Math.max(320, dragRef.current.startW + (e.clientX - dragRef.current.startX)),
-            height: Math.max(220, dragRef.current.startH + (e.clientY - dragRef.current.startY))
+            width: Math.max(
+              320,
+              dragRef.current.startW +
+                (event.clientX - dragRef.current.startX)
+            ),
+            height: Math.max(
+              220,
+              dragRef.current.startH +
+                (event.clientY - dragRef.current.startY)
+            ),
           });
         });
       }
     };
 
-    const handleMouseUp = () => {
+    const stopInteraction = () => {
       setIsDragging(false);
       setIsResizing(false);
     };
 
-    if (isDragging || isResizing) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    }
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", stopInteraction);
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mouseup", stopInteraction);
     };
   }, [isDragging, isResizing]);
+
+  const toggleMaximized = () => {
+    setMaximized((current) => !current);
+  };
+
+  const isMoving = isDragging || isResizing;
 
   return (
     <div
       onMouseDown={onFocus}
       className={`fixed z-30 overflow-hidden border window-shadow flex flex-col ${
-        isDragging || isResizing
+        isMoving
           ? "transition-none select-none"
           : "transition-all duration-150"
       } ${maximized ? "top-12 left-4 right-4 bottom-20 w-auto h-auto" : ""}`}
@@ -99,21 +131,21 @@ export default function Window({
               left: `${pos.x}px`,
               top: `${pos.y}px`,
               width: `${size.width}px`,
-              height: `${size.height}px`
-            })
+              height: `${size.height}px`,
+            }),
       }}
     >
-      {/* Title Bar */}
       <div
         onMouseDown={startDrag}
         className="h-11 border-b flex items-center justify-between px-3 select-none cursor-grab active:cursor-grabbing shrink-0"
         style={{
           borderColor: "var(--border-color)",
-          backgroundColor: "var(--paper-deep)"
+          backgroundColor: "var(--paper-deep)",
         }}
       >
         <div className="flex items-center gap-3">
           {Icon && <Icon size={15} />}
+
           <span className="font-system text-[10px] font-bold uppercase tracking-[.18em]">
             {title}
           </span>
@@ -121,11 +153,16 @@ export default function Window({
 
         <div className="flex items-center gap-1">
           <button
-            onClick={() => setMaximized(!maximized)}
+            onClick={toggleMaximized}
             className="p-1.5 hover:bg-[var(--accent)] hover:text-white transition-colors"
           >
-            {maximized ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+            {maximized ? (
+              <Minimize2 size={13} />
+            ) : (
+              <Maximize2 size={13} />
+            )}
           </button>
+
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-[var(--accent)] hover:text-white transition-colors"
@@ -135,10 +172,10 @@ export default function Window({
         </div>
       </div>
 
-      {/* Window Body */}
-      <div className="flex-1 overflow-auto p-5">{children}</div>
+      <div className="flex-1 overflow-auto p-5">
+        {children}
+      </div>
 
-      {/* Resize Handle */}
       {!maximized && (
         <div
           onMouseDown={startResize}

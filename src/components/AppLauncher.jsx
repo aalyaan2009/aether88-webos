@@ -1,15 +1,15 @@
 import { X, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { apps } from "../data/apps";
 
 export default function AppLauncher({ onClose, openApp }) {
   const [query, setQuery] = useState("");
 
-  const filtered = useMemo(() => {
-    return apps.filter((app) =>
-      `${app.name} ${app.category}`.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query]);
+  const search = query.toLowerCase();
+
+  const filteredApps = apps.filter((app) =>
+    `${app.name} ${app.category}`.toLowerCase().includes(search)
+  );
 
   return (
     <div
@@ -18,7 +18,7 @@ export default function AppLauncher({ onClose, openApp }) {
     >
       <div
         className="w-[min(900px,90vw)] max-h-[75vh] border bg-[var(--paper)] text-[var(--ink)] p-5 overflow-auto hard-shadow"
-        onMouseDown={(e) => e.stopPropagation()}
+        onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-5">
           <div>
@@ -45,14 +45,14 @@ export default function AppLauncher({ onClose, openApp }) {
           <input
             autoFocus
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
             placeholder="Search applications..."
             className="w-full border py-3 pl-10 pr-4 bg-transparent font-system text-xs"
           />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-          {filtered.map((app) => {
+          {filteredApps.map((app) => {
             const Icon = app.icon;
 
             return (

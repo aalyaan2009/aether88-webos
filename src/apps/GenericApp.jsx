@@ -1,62 +1,43 @@
-export default function GenericApp({ app }) {
+import { File, Folder } from "lucide-react";
+
+const demoFiles = [
+  { name: "Documents", type: "folder" },
+  { name: "Downloads", type: "folder" },
+  { name: "Pictures", type: "folder" },
+  { name: "welcome.txt", type: "file" },
+  { name: "system.log", type: "file" },
+];
+
+export default function Files() {
   return (
-    <div className="h-full">
-      <div className="mb-8">
-        <p className="font-system text-[9px] uppercase tracking-[.25em] text-[#c85a32]">
-          AETHER APPLICATION
+    <div>
+      <div className="mb-5">
+        <p className="font-system text-[9px] uppercase tracking-[.2em] opacity-50">
+          Local filesystem
         </p>
 
-        <h1 className="font-editorial text-5xl font-black uppercase mt-2">
-          {app.name}
-        </h1>
-
-        <p className="mt-3 text-sm opacity-60 max-w-xl">
-          {app.name} is part of the AETHER browser operating environment.
-        </p>
+        <h2 className="font-editorial text-3xl font-black uppercase">
+          Files
+        </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="border p-5 hard-shadow-small">
-          <div className="font-system text-[9px] uppercase opacity-50">
-            STATUS
-          </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {demoFiles.map((item) => {
+          const Icon = item.type === "folder" ? Folder : File;
 
-          <div className="mt-3 font-editorial text-2xl font-bold">
-            READY
-          </div>
-        </div>
+          return (
+            <button
+              key={item.name}
+              className="border p-5 text-left hover:bg-[#c85a32] hover:text-white transition"
+            >
+              <Icon />
 
-        <div className="border p-5 hard-shadow-small">
-          <div className="font-system text-[9px] uppercase opacity-50">
-            MODULE
-          </div>
-
-          <div className="mt-3 font-editorial text-2xl font-bold">
-            {app.category}
-          </div>
-        </div>
-
-        <div className="border p-5 hard-shadow-small">
-          <div className="font-system text-[9px] uppercase opacity-50">
-            VERSION
-          </div>
-
-          <div className="mt-3 font-editorial text-2xl font-bold">
-            1.0
-          </div>
-        </div>
-      </div>
-
-      <div className="border mt-6 p-8 min-h-64 flex items-center justify-center text-center">
-        <div>
-          <div className="font-editorial text-3xl uppercase font-black">
-            Workspace Ready
-          </div>
-
-          <p className="font-system text-[10px] uppercase tracking-widest opacity-50 mt-3">
-            This module is initialized.
-          </p>
-        </div>
+              <div className="mt-4 font-system text-[10px] uppercase">
+                {item.name}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

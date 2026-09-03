@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocalStorage } from "./hooks/useLocalStorage";
 import { Terminal, X } from "lucide-react";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 import Browser from "./apps/Browser";
 import Calculator from "./apps/Calculator";
@@ -25,86 +25,127 @@ const appMap = {
   music: Music,
   notes: Notes,
   settings: Settings,
-  terminal: TerminalApp
+  terminal: TerminalApp,
 };
+
+const terminalCommands = [
+  { cmd: "help", desc: "List all executable OS commands" },
+  {
+    cmd: "open <app_id>",
+    desc: "Launch app directly (e.g., 'open browser')",
+  },
+  { cmd: "clear", desc: "Wipe terminal output history" },
+  { cmd: "theme <light|dark>", desc: "Switch system theme" },
+  { cmd: "calc <math_expr>", desc: "Evaluate numeric math string" },
+  { cmd: "sysinfo", desc: "Display current RAM, OS, & window metrics" },
+  { cmd: "storage", desc: "Inspect localStorage byte size" },
+  { cmd: "reset", desc: "Clear localStorage and reboot OS" },
+];
 
 export default function App() {
   const [dark, setDark] = useLocalStorage("aether_dark", false);
-  const [openApps, setOpenApps] = useLocalStorage("aether_openApps", ["terminal"]);
-  const [activeApp, setActiveApp] = useLocalStorage("aether_activeApp", "terminal");
+  const [openApps, setOpenApps] = useLocalStorage(
+    "aether_openApps",
+    ["terminal"]
+  );
+  const [activeApp, setActiveApp] = useLocalStorage(
+    "aether_activeApp",
+    "terminal"
+  );
   const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle("dark", dark);
+    const savedAccent =
+      localStorage.getItem("aether_accent") || "#c85a32";
 
-    const savedAccent = localStorage.getItem("aether_accent") || "#c85a32";
+    root.classList.toggle("dark", dark);
     root.style.setProperty("--paper", dark ? "#171717" : "#f3efe6");
     root.style.setProperty("--paper-deep", dark ? "#222222" : "#ffffff");
     root.style.setProperty("--ink", dark ? "#f3efe6" : "#171717");
-    root.style.setProperty("--border-color", dark ? "#333333" : "#d0ccc4");
+    root.style.setProperty(
+      "--border-color",
+      dark ? "#333333" : "#d0ccc4"
+    );
     root.style.setProperty("--accent", savedAccent);
   }, [dark]);
 
-  const appLookup = useMemo(
-    () => Object.fromEntries(apps.map((app) => [app.id, app])),
-    []
-  );
+  const appLookup = useMemo(() => {
+    return Object.fromEntries(
+      apps.map((app) => [app.id, app])
+    );
+  }, []);
 
   const focusApp = (id) => {
     setActiveApp(id);
-    setOpenApps((current) => {
-      if (!current.includes(id)) return current;
-      return [...current.filter((appId) => appId !== id), id];
+
+    setOpenApps((currentApps) => {
+      if (!currentApps.includes(id)) {
+        return currentApps;
+      }
+
+      return [
+        ...currentApps.filter((appId) => appId !== id),
+        id,
+      ];
     });
   };
 
   const openApp = (id) => {
     const appId = String(id || "").trim();
-    if (!appId || !appLookup[appId]) return;
+
+    if (!appId || !appLookup[appId]) {
+      return;
+    }
 
     if (openApps.includes(appId)) {
       focusApp(appId);
-    } else {
-      setOpenApps((current) => [...current, appId]);
-      setActiveApp(appId);
+      return;
     }
+
+    setOpenApps((currentApps) => [...currentApps, appId]);
+    setActiveApp(appId);
   };
 
   const closeApp = (id) => {
-    setOpenApps((current) => {
-      const updated = current.filter((appId) => appId !== id);
+    setOpenApps((currentApps) => {
+      const remainingApps = currentApps.filter(
+        (appId) => appId !== id
+      );
+
       if (activeApp === id) {
-        setActiveApp(updated.length > 0 ? updated[updated.length - 1] : null);
+        const nextApp =
+          remainingApps.length > 0
+            ? remainingApps[remainingApps.length - 1]
+            : null;
+
+        setActiveApp(nextApp);
       }
-      return updated;
+
+      return remainingApps;
     });
   };
 
-  const terminalCommands = [
-    { cmd: "help", desc: "List all executable OS commands" },
-    { cmd: "open <app_id>", desc: "Launch app directly (e.g., 'open browser')" },
-    { cmd: "clear", desc: "Wipe terminal output history" },
-    { cmd: "theme <light|dark>", desc: "Switch system theme" },
-    { cmd: "calc <math_expr>", desc: "Evaluate numeric math string" },
-    { cmd: "sysinfo", desc: "Display current RAM, OS, & window metrics" },
-    { cmd: "storage", desc: "Inspect localStorage byte size" },
-    { cmd: "reset", desc: "Clear localStorage and reboot OS" }
-  ];
+  const toggleDarkMode = () => {
+    setDark((current) => !current);
+  };
 
   return (
     <div
       className="relative min-h-screen h-screen w-screen overflow-hidden select-none"
-      style={{ backgroundColor: "var(--paper)", color: "var(--ink)" }}
+      style={{
+        backgroundColor: "var(--paper)",
+        color: "var(--ink)",
+      }}
     >
       <Desktop>
-        
         <header
           className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b px-4 py-2 backdrop-blur-md"
           style={{
-            backgroundColor: "color-mix(in srgb, var(--paper) 85%, transparent)",
+            backgroundColor:
+              "color-mix(in srgb, var(--paper) 85%, transparent)",
             borderColor: "var(--border-color)",
-            color: "var(--ink)"
+            color: "var(--ink)",
           }}
         >
           <div className="font-system text-[9px] uppercase tracking-[0.35em] font-bold">
@@ -112,21 +153,21 @@ export default function App() {
           </div>
 
           <button
-            onClick={() => setDark(!dark)}
+            onClick={toggleDarkMode}
             className="font-system text-[9px] uppercase tracking-[0.2em] opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
           >
             {dark ? "● Dark Mode" : "○ Light Mode"}
           </button>
         </header>
 
-        
         <div className="relative pt-10 h-full w-full">
           {openApps.map((id) => {
             const app = appLookup[id] || {
               id,
               name: id.replace(/-/g, " "),
-              category: "System"
+              category: "System",
             };
+
             const Component = appMap[id] || GenericApp;
 
             return (
@@ -150,7 +191,6 @@ export default function App() {
         </div>
       </Desktop>
 
-      
       {guideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div
@@ -158,16 +198,20 @@ export default function App() {
             style={{
               backgroundColor: "var(--paper-deep)",
               borderColor: "var(--border-color)",
-              color: "var(--ink)"
+              color: "var(--ink)",
             }}
           >
             <div
               className="flex items-center justify-between border-b pb-3"
-              style={{ borderColor: "var(--border-color)" }}
+              style={{
+                borderColor: "var(--border-color)",
+              }}
             >
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
-                <Terminal size={15} /> Terminal & OS Operations
+                <Terminal size={15} />
+                Terminal & OS Operations
               </div>
+
               <button
                 onClick={() => setGuideOpen(false)}
                 className="p-1 hover:opacity-70"
@@ -177,25 +221,29 @@ export default function App() {
             </div>
 
             <p className="text-xs opacity-75 leading-relaxed">
-              <strong>How AETHER OS Works:</strong> System preferences, open
-              window positions, scratchpad notes, and daily tasks auto-sync to
-              your browser’s local storage.
+              <strong>How AETHER OS Works:</strong> System preferences,
+              open window positions, scratchpad notes, and daily tasks
+              auto-sync to your browser’s local storage.
             </p>
 
             <div className="space-y-2">
               <div className="text-[10px] font-bold uppercase tracking-wider opacity-60">
                 Terminal Command Reference
               </div>
+
               <div className="max-h-52 overflow-y-auto space-y-1.5 pr-1 text-xs">
                 {terminalCommands.map((item) => (
                   <div
                     key={item.cmd}
                     className="p-2 border rounded-lg bg-[var(--paper)] font-mono"
-                    style={{ borderColor: "var(--border-color)" }}
+                    style={{
+                      borderColor: "var(--border-color)",
+                    }}
                   >
                     <div className="text-[var(--accent)] font-bold">
                       {item.cmd}
                     </div>
+
                     <div className="text-[10px] opacity-70 font-sans mt-0.5">
                       {item.desc}
                     </div>
@@ -214,7 +262,6 @@ export default function App() {
         </div>
       )}
 
-      
       <Dock
         openApp={openApp}
         focusApp={focusApp}

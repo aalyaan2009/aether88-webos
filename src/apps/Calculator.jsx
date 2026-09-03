@@ -5,16 +5,18 @@ export default function Calculator() {
 
   const calculate = () => {
     try {
-      if (!/^[0-9+\-*/().% ]+$/.test(value)) {
+      const expression = value.trim();
+
+      if (!/^[0-9+\-*/().% ]+$/.test(expression)) {
         setValue("ERROR");
         return;
       }
 
-      setValue(
-        String(
-          Function(`"use strict"; return (${value})`)()
-        )
-      );
+      const result = Function(
+        `"use strict"; return (${expression})`
+      )();
+
+      setValue(String(result));
     } catch {
       setValue("ERROR");
     }
@@ -25,8 +27,22 @@ export default function Calculator() {
     "4", "5", "6", "*",
     "1", "2", "3", "-",
     "0", ".", "%", "+",
-    "C", "="
+    "C", "=",
   ];
+
+  const handleButtonClick = (button) => {
+    if (button === "C") {
+      setValue("");
+      return;
+    }
+
+    if (button === "=") {
+      calculate();
+      return;
+    }
+
+    setValue(value + button);
+  };
 
   return (
     <div className="max-w-sm mx-auto">
@@ -38,15 +54,7 @@ export default function Calculator() {
         {buttons.map((button) => (
           <button
             key={button}
-            onClick={() => {
-              if (button === "C") {
-                setValue("");
-              } else if (button === "=") {
-                calculate();
-              } else {
-                setValue(value + button);
-              }
-            }}
+            onClick={() => handleButtonClick(button)}
             className="border p-4 font-system hover:bg-[#c85a32] hover:text-white transition"
           >
             {button}

@@ -29,9 +29,9 @@
   }
 
   .base {
-    width: 170px;
     position: relative;
     z-index: 0;
+    width: 170px;
   }
 
   .framework,
@@ -43,7 +43,11 @@
     z-index: 1;
     top: 34px;
     height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+    transform:
+      perspective(2000px)
+      rotateZ(300deg)
+      rotateX(44deg)
+      rotateY(39deg)
       scale(1.4);
   }
 
@@ -52,7 +56,11 @@
     top: 107px;
     height: 26px;
     width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+    transform:
+      perspective(2000px)
+      rotateZ(300deg)
+      rotateX(40deg)
+      rotateY(39deg)
       scale(0.8);
   }
 }
@@ -76,7 +84,7 @@
   border-top: 1px solid var(--border);
   text-align: left;
 
-  & > div {
+  > div {
     flex: 1 1 0;
     padding: 32px;
 
@@ -86,9 +94,9 @@
   }
 
   .icon {
-    margin-bottom: 16px;
     width: 22px;
     height: 22px;
+    margin-bottom: 16px;
   }
 
   @media (max-width: 1024px) {
@@ -108,14 +116,14 @@
     }
 
     a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
       color: var(--text-h);
       font-size: 16px;
       border-radius: 6px;
       background: var(--social-bg);
-      display: flex;
-      padding: 6px 12px;
-      align-items: center;
-      gap: 8px;
       text-decoration: none;
       transition: box-shadow 0.3s;
 
@@ -124,8 +132,8 @@
       }
 
       .button-icon {
-        height: 18px;
         width: 18px;
+        height: 18px;
       }
     }
 

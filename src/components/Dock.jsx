@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HelpCircle } from "lucide-react";
 import { apps } from "../data/apps";
 
@@ -6,23 +6,33 @@ export default function Dock({
   openApp,
   openApps = [],
   focusApp,
-  openCommands
+  openCommands,
 }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(id);
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
-  const dockApps = ["browser", "terminal", "notes", "calculator", "settings"];
+  const dockApps = [
+    "browser",
+    "terminal",
+    "notes",
+    "calculator",
+    "settings",
+  ];
 
   const handleAppClick = (id) => {
     if (openApps.includes(id)) {
-      focusApp?.(id);
-    } else {
-      openApp?.(id);
+      focusApp(id);
+      return;
     }
+
+    openApp(id);
   };
 
   return (
@@ -32,13 +42,15 @@ export default function Dock({
         backgroundColor: "var(--paper-deep)",
         borderColor: "var(--border-color)",
         color: "var(--ink)",
-        transform: "translateX(-50%)"
+        transform: "translateX(-50%)",
       }}
     >
       <div className="flex items-center gap-1 shrink-0">
         {dockApps.map((id) => {
           const app = apps.find((item) => item.id === id);
+
           if (!app) return null;
+
           const Icon = app.icon;
           const isOpen = openApps.includes(id);
 
@@ -52,8 +64,10 @@ export default function Dock({
                   : "hover:bg-[var(--accent)] hover:text-white"
               }`}
               style={{
-                borderColor: isOpen ? "var(--accent)" : "var(--border-color)",
-                color: isOpen ? "#ffffff" : "var(--ink)"
+                borderColor: isOpen
+                  ? "var(--accent)"
+                  : "var(--border-color)",
+                color: isOpen ? "#ffffff" : "var(--ink)",
               }}
               title={app.name}
             >
@@ -64,7 +78,7 @@ export default function Dock({
                 style={{
                   backgroundColor: "var(--paper-deep)",
                   color: "var(--ink)",
-                  borderColor: "var(--border-color)"
+                  borderColor: "var(--border-color)",
                 }}
               >
                 {app.name}
@@ -85,14 +99,17 @@ export default function Dock({
       >
         {time.toLocaleTimeString(undefined, {
           hour: "2-digit",
-          minute: "2-digit"
+          minute: "2-digit",
         })}
       </div>
 
       <button
         onClick={openCommands}
         className="p-2 border hover:bg-[var(--accent)] hover:text-white transition-colors shrink-0"
-        style={{ borderColor: "var(--border-color)", color: "var(--ink)" }}
+        style={{
+          borderColor: "var(--border-color)",
+          color: "var(--ink)",
+        }}
         title="View Commands Manual"
       >
         <HelpCircle size={17} />

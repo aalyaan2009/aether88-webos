@@ -1,15 +1,24 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 const tracks = [
   { title: "Neon Drift", artist: "AETHER FM", duration: "3:42" },
   { title: "Static Bloom", artist: "Signal Bloom", duration: "4:18" },
-  { title: "Afterglow Circuit", artist: "Chrome Harbor", duration: "5:04" }
+  { title: "Afterglow Circuit", artist: "Chrome Harbor", duration: "5:04" },
 ];
 
 export default function Music() {
   const [currentTrack, setCurrentTrack] = useState(0);
+  const track = tracks[currentTrack];
 
-  const track = useMemo(() => tracks[currentTrack], [currentTrack]);
+  const previousTrack = () => {
+    setCurrentTrack((current) =>
+      current === 0 ? tracks.length - 1 : current - 1
+    );
+  };
+
+  const nextTrack = () => {
+    setCurrentTrack((current) => (current + 1) % tracks.length);
+  };
 
   return (
     <div className="flex h-full flex-col gap-5">
@@ -39,14 +48,14 @@ export default function Music() {
 
         <div className="mt-4 flex items-center justify-between">
           <button
-            onClick={() => setCurrentTrack((current) => (current === 0 ? tracks.length - 1 : current - 1))}
+            onClick={previousTrack}
             className="border px-3 py-2 font-system text-[9px] uppercase tracking-[0.2em] hover:bg-[#c85a32] hover:text-white"
           >
             Prev
           </button>
 
           <button
-            onClick={() => setCurrentTrack((current) => (current + 1) % tracks.length)}
+            onClick={nextTrack}
             className="border bg-[#c85a32] px-4 py-2 font-system text-[9px] uppercase tracking-[0.2em] text-white"
           >
             Next
@@ -60,7 +69,9 @@ export default function Music() {
             key={item.title}
             onClick={() => setCurrentTrack(index)}
             className={`flex items-center justify-between border px-3 py-2 text-left font-system text-[10px] uppercase tracking-[0.15em] transition ${
-              index === currentTrack ? "bg-[#c85a32] text-white" : "hover:bg-[#171717]/5"
+              index === currentTrack
+                ? "bg-[#c85a32] text-white"
+                : "hover:bg-[#171717]/5"
             }`}
           >
             <span>{item.title}</span>
