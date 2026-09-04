@@ -16,15 +16,15 @@ export default function Settings() {
   const [storageUsed, setStorageUsed] = useState("0 KB");
 
   useEffect(() => {
-    let totalBytes = 0;
+    let bytes = 0;
 
-    for (const key in localStorage) {
+    for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
-        totalBytes += (key.length + localStorage[key].length) * 2;
+        bytes += (key.length + localStorage[key].length) * 2;
       }
     }
 
-    setStorageUsed(`${(totalBytes / 1024).toFixed(2)} KB`);
+    setStorageUsed((bytes / 1024).toFixed(2) + " KB");
   }, []);
 
   const changeAccent = (color) => {
@@ -34,11 +34,13 @@ export default function Settings() {
   };
 
   const resetOS = () => {
-    const shouldReset = confirm(
-      "Reset AETHER OS? This will clear open app history, notes, and targets."
-    );
-
-    if (!shouldReset) return;
+    if (
+      !confirm(
+        "Reset AETHER OS? This will clear open app history, notes, and targets."
+      )
+    ) {
+      return;
+    }
 
     localStorage.clear();
     window.location.reload();
@@ -136,3 +138,4 @@ export default function Settings() {
     </div>
   );
 }
+

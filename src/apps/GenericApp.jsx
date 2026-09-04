@@ -1,6 +1,6 @@
 import { File, Folder } from "lucide-react";
 
-const demoFiles = [
+const files = [
   { name: "Documents", type: "folder" },
   { name: "Downloads", type: "folder" },
   { name: "Pictures", type: "folder" },
@@ -22,23 +22,20 @@ export default function Files() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {demoFiles.map((item) => {
-          const Icon = item.type === "folder" ? Folder : File;
+        {files.map((item) => (
+          <button
+            key={item.name}
+            className="border p-5 text-left hover:bg-[#c85a32] hover:text-white transition"
+          >
+            {item.type === "folder" ? <Folder /> : <File />}
 
-          return (
-            <button
-              key={item.name}
-              className="border p-5 text-left hover:bg-[#c85a32] hover:text-white transition"
-            >
-              <Icon />
-
-              <div className="mt-4 font-system text-[10px] uppercase">
-                {item.name}
-              </div>
-            </button>
-          );
-        })}
+            <div className="mt-4 font-system text-[10px] uppercase">
+              {item.name}
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );
 }
+

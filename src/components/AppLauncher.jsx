@@ -5,10 +5,10 @@ import { apps } from "../data/apps";
 export default function AppLauncher({ onClose, openApp }) {
   const [query, setQuery] = useState("");
 
-  const search = query.toLowerCase();
-
   const filteredApps = apps.filter((app) =>
-    `${app.name} ${app.category}`.toLowerCase().includes(search)
+    `${app.name} ${app.category}`
+      .toLowerCase()
+      .includes(query.toLowerCase())
   );
 
   return (
@@ -18,7 +18,7 @@ export default function AppLauncher({ onClose, openApp }) {
     >
       <div
         className="w-[min(900px,90vw)] max-h-[75vh] border bg-[var(--paper)] text-[var(--ink)] p-5 overflow-auto hard-shadow"
-        onMouseDown={(event) => event.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-5">
           <div>
@@ -45,34 +45,30 @@ export default function AppLauncher({ onClose, openApp }) {
           <input
             autoFocus
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search applications..."
             className="w-full border py-3 pl-10 pr-4 bg-transparent font-system text-xs"
           />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-          {filteredApps.map((app) => {
-            const Icon = app.icon;
+          {filteredApps.map((app) => (
+            <button
+              key={app.id}
+              onClick={() => openApp(app.id)}
+              className="border p-4 text-left hover:bg-[#c85a32] hover:text-white transition"
+            >
+              <app.icon size={18} />
 
-            return (
-              <button
-                key={app.id}
-                onClick={() => openApp(app.id)}
-                className="border p-4 text-left hover:bg-[#c85a32] hover:text-white transition"
-              >
-                <Icon size={18} />
+              <div className="mt-4 font-system text-[9px] uppercase font-bold">
+                {app.name}
+              </div>
 
-                <div className="mt-4 font-system text-[9px] uppercase font-bold">
-                  {app.name}
-                </div>
-
-                <div className="text-[8px] opacity-50 mt-1">
-                  {app.category}
-                </div>
-              </button>
-            );
-          })}
+              <div className="text-[8px] opacity-50 mt-1">
+                {app.category}
+              </div>
+            </button>
+          ))}
         </div>
       </div>
     </div>

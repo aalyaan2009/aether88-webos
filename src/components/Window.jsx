@@ -24,55 +24,61 @@ export default function Window({
     startH: 0,
   });
 
-  const startDrag = (event) => {
-    if (maximized || event.target.closest("button")) return;
+  const startDrag = (e) => {
+    if (maximized || e.target.closest("button")) {
+      return;
+    }
 
     setIsDragging(true);
 
     dragRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
+      startX: e.clientX,
+      startY: e.clientY,
       posX: pos.x,
       posY: pos.y,
     };
   };
 
-  const startResize = (event) => {
-    event.stopPropagation();
+  const startResize = (e) => {
+    e.stopPropagation();
 
-    if (maximized) return;
+    if (maximized) {
+      return;
+    }
 
     setIsResizing(true);
 
     dragRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
+      startX: e.clientX,
+      startY: e.clientY,
       startW: size.width,
       startH: size.height,
     };
   };
 
   useEffect(() => {
-    if (!isDragging && !isResizing) return;
+    if (!isDragging && !isResizing) {
+      return;
+    }
 
-    const handleMouseMove = (event) => {
+    const move = (e) => {
       if (isDragging) {
         requestAnimationFrame(() => {
           setPos({
             x: Math.max(
               0,
               dragRef.current.posX +
-                (event.clientX - dragRef.current.startX)
+                e.clientX -
+                dragRef.current.startX
             ),
             y: Math.max(
               0,
               dragRef.current.posY +
-                (event.clientY - dragRef.current.startY)
+                e.clientY -
+                dragRef.current.startY
             ),
           });
         });
-
-        return;
       }
 
       if (isResizing) {
@@ -81,35 +87,33 @@ export default function Window({
             width: Math.max(
               320,
               dragRef.current.startW +
-                (event.clientX - dragRef.current.startX)
+                e.clientX -
+                dragRef.current.startX
             ),
             height: Math.max(
               220,
               dragRef.current.startH +
-                (event.clientY - dragRef.current.startY)
+                e.clientY -
+                dragRef.current.startY
             ),
           });
         });
       }
     };
 
-    const stopInteraction = () => {
+    const stop = () => {
       setIsDragging(false);
       setIsResizing(false);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", stopInteraction);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", stop);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", stopInteraction);
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", stop);
     };
   }, [isDragging, isResizing]);
-
-  const toggleMaximized = () => {
-    setMaximized((current) => !current);
-  };
 
   const isMoving = isDragging || isResizing;
 
@@ -124,7 +128,9 @@ export default function Window({
       style={{
         backgroundColor: "var(--paper)",
         color: "var(--ink)",
-        borderColor: active ? "var(--accent)" : "var(--border-color)",
+        borderColor: active
+          ? "var(--accent)"
+          : "var(--border-color)",
         ...(maximized
           ? {}
           : {
@@ -153,7 +159,7 @@ export default function Window({
 
         <div className="flex items-center gap-1">
           <button
-            onClick={toggleMaximized}
+            onClick={() => setMaximized(!maximized)}
             className="p-1.5 hover:bg-[var(--accent)] hover:text-white transition-colors"
           >
             {maximized ? (
@@ -190,3 +196,4 @@ export default function Window({
     </div>
   );
 }
+

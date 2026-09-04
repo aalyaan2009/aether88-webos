@@ -29,10 +29,9 @@ export default function Dock({
   const handleAppClick = (id) => {
     if (openApps.includes(id)) {
       focusApp(id);
-      return;
+    } else {
+      openApp(id);
     }
-
-    openApp(id);
   };
 
   return (
@@ -49,9 +48,10 @@ export default function Dock({
         {dockApps.map((id) => {
           const app = apps.find((item) => item.id === id);
 
-          if (!app) return null;
+          if (!app) {
+            return null;
+          }
 
-          const Icon = app.icon;
           const isOpen = openApps.includes(id);
 
           return (
@@ -71,7 +71,7 @@ export default function Dock({
               }}
               title={app.name}
             >
-              <Icon size={18} />
+              <app.icon size={18} />
 
               <span
                 className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 text-[9px] font-system opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity border"
@@ -117,3 +117,4 @@ export default function Dock({
     </div>
   );
 }
+

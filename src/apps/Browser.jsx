@@ -9,30 +9,6 @@ import {
 export default function Browser() {
   const [url, setUrl] = useState("https://google.com");
 
-  const handleNavigate = (e) => {
-    if (e) {
-      e.preventDefault();
-    }
-
-    const input = url.trim();
-
-    if (!input) return;
-
-    let destination = input;
-
-    if (!input.startsWith("http://") && !input.startsWith("https://")) {
-      if (input.includes(".")) {
-        destination = `https://${input}`;
-      } else {
-        destination = `https://www.google.com/search?q=${encodeURIComponent(
-          input
-        )}`;
-      }
-    }
-
-    window.open(destination, "_blank", "noopener,noreferrer");
-  };
-
   const bookmarks = [
     { name: "Google", url: "https://google.com" },
     { name: "GitHub", url: "https://github.com" },
@@ -40,6 +16,32 @@ export default function Browser() {
     { name: "StackOverflow", url: "https://stackoverflow.com" },
     { name: "DuckDuckGo", url: "https://duckduckgo.com" },
   ];
+
+  const handleNavigate = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    let input = url.trim();
+
+    if (!input) {
+      return;
+    }
+
+    let link = input;
+
+    if (!input.startsWith("http://") && !input.startsWith("https://")) {
+      if (input.includes(".")) {
+        link = "https://" + input;
+      } else {
+        link =
+          "https://www.google.com/search?q=" +
+          encodeURIComponent(input);
+      }
+    }
+
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div
@@ -106,21 +108,17 @@ export default function Browser() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {bookmarks.map((bookmark) => (
+          {bookmarks.map((item) => (
             <button
-              key={bookmark.name}
+              key={item.name}
               onClick={() => {
-                setUrl(bookmark.url);
-                window.open(
-                  bookmark.url,
-                  "_blank",
-                  "noopener,noreferrer"
-                );
+                setUrl(item.url);
+                window.open(item.url, "_blank", "noopener,noreferrer");
               }}
               className="px-2.5 py-1 border text-[11px] rounded-md hover:bg-[var(--accent)] hover:text-white transition-colors"
               style={{ borderColor: "var(--border-color)" }}
             >
-              {bookmark.name}
+              {item.name}
             </button>
           ))}
         </div>
@@ -128,3 +126,4 @@ export default function Browser() {
     </div>
   );
 }
+

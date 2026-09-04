@@ -17,7 +17,7 @@ export default function Clock() {
     second: "2-digit",
   });
 
-  const formattedDate = date.toLocaleDateString(undefined, {
+  const day = date.toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -31,7 +31,7 @@ export default function Clock() {
       </div>
 
       <div className="mt-5 font-editorial text-2xl uppercase">
-        {formattedDate}
+        {day}
       </div>
 
       <div className="mt-2 font-system text-[9px] uppercase tracking-[.25em] opacity-50">
@@ -40,3 +40,4 @@ export default function Clock() {
     </div>
   );
 }
+

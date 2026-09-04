@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Terminal, X } from "lucide-react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 
@@ -60,21 +60,27 @@ export default function App() {
       localStorage.getItem("aether_accent") || "#c85a32";
 
     root.classList.toggle("dark", dark);
-    root.style.setProperty("--paper", dark ? "#171717" : "#f3efe6");
-    root.style.setProperty("--paper-deep", dark ? "#222222" : "#ffffff");
-    root.style.setProperty("--ink", dark ? "#f3efe6" : "#171717");
-    root.style.setProperty(
-      "--border-color",
-      dark ? "#333333" : "#d0ccc4"
-    );
+
+    if (dark) {
+      root.style.setProperty("--paper", "#171717");
+      root.style.setProperty("--paper-deep", "#222222");
+      root.style.setProperty("--ink", "#f3efe6");
+      root.style.setProperty("--border-color", "#333333");
+    } else {
+      root.style.setProperty("--paper", "#f3efe6");
+      root.style.setProperty("--paper-deep", "#ffffff");
+      root.style.setProperty("--ink", "#171717");
+      root.style.setProperty("--border-color", "#d0ccc4");
+    }
+
     root.style.setProperty("--accent", savedAccent);
   }, [dark]);
 
-  const appLookup = useMemo(() => {
-    return Object.fromEntries(
-      apps.map((app) => [app.id, app])
-    );
-  }, []);
+  const appLookup = {};
+
+  for (let app of apps) {
+    appLookup[app.id] = app;
+  }
 
   const focusApp = (id) => {
     setActiveApp(id);
@@ -103,7 +109,11 @@ export default function App() {
       return;
     }
 
-    setOpenApps((currentApps) => [...currentApps, appId]);
+    setOpenApps((currentApps) => [
+      ...currentApps,
+      appId,
+    ]);
+
     setActiveApp(appId);
   };
 
@@ -114,20 +124,17 @@ export default function App() {
       );
 
       if (activeApp === id) {
-        const nextApp =
-          remainingApps.length > 0
-            ? remainingApps[remainingApps.length - 1]
-            : null;
-
-        setActiveApp(nextApp);
+        if (remainingApps.length > 0) {
+          setActiveApp(
+            remainingApps[remainingApps.length - 1]
+          );
+        } else {
+          setActiveApp(null);
+        }
       }
 
       return remainingApps;
     });
-  };
-
-  const toggleDarkMode = () => {
-    setDark((current) => !current);
   };
 
   return (
@@ -153,7 +160,7 @@ export default function App() {
           </div>
 
           <button
-            onClick={toggleDarkMode}
+            onClick={() => setDark(!dark)}
             className="font-system text-[9px] uppercase tracking-[0.2em] opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
           >
             {dark ? "● Dark Mode" : "○ Light Mode"}

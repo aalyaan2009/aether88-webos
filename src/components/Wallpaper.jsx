@@ -5,7 +5,10 @@ export default function Wallpaper({ dark }) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext("2d");
     let animationFrame;
@@ -16,12 +19,18 @@ export default function Wallpaper({ dark }) {
     };
 
     const render = (time) => {
-      const { width, height } = canvas;
+      const width = canvas.width;
+      const height = canvas.height;
 
       ctx.clearRect(0, 0, width, height);
 
       // Background
-      ctx.fillStyle = dark ? "#121212" : "#f3efe6";
+      if (dark) {
+        ctx.fillStyle = "#121212";
+      } else {
+        ctx.fillStyle = "#f3efe6";
+      }
+
       ctx.fillRect(0, 0, width, height);
 
       // Moving grid
@@ -29,9 +38,12 @@ export default function Wallpaper({ dark }) {
       const shift = (time * 0.01) % spacing;
 
       ctx.lineWidth = 1;
-      ctx.strokeStyle = dark
-        ? "rgba(255,255,255,0.035)"
-        : "rgba(23,23,23,0.045)";
+
+      if (dark) {
+        ctx.strokeStyle = "rgba(255,255,255,0.035)";
+      } else {
+        ctx.strokeStyle = "rgba(23,23,23,0.045)";
+      }
 
       for (let x = -spacing; x < width + spacing; x += spacing) {
         ctx.beginPath();
@@ -57,10 +69,12 @@ export default function Wallpaper({ dark }) {
         420
       );
 
-      gradient.addColorStop(
-        0,
-        dark ? "rgba(200,90,50,0.10)" : "rgba(200,90,50,0.08)"
-      );
+      if (dark) {
+        gradient.addColorStop(0, "rgba(200,90,50,0.10)");
+      } else {
+        gradient.addColorStop(0, "rgba(200,90,50,0.08)");
+      }
+
       gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;

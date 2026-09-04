@@ -15,31 +15,42 @@ import {
 function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
   const [pos, setPos] = useState(() => {
     const saved = localStorage.getItem(`aether_widget_${id}_pos`);
-    return saved ? JSON.parse(saved) : initialPos;
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    return initialPos;
   });
 
   const dragging = useRef(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
+  const offset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    localStorage.setItem(`aether_widget_${id}_pos`, JSON.stringify(pos));
+    localStorage.setItem(
+      `aether_widget_${id}_pos`,
+      JSON.stringify(pos)
+    );
   }, [pos, id]);
 
-  const startDragging = (event) => {
-    event.stopPropagation();
+  const startDragging = (e) => {
+    e.stopPropagation();
 
     dragging.current = true;
-    dragOffset.current = {
-      x: event.clientX - pos.x,
-      y: event.clientY - pos.y,
+
+    offset.current = {
+      x: e.clientX - pos.x,
+      y: e.clientY - pos.y,
     };
 
-    const move = (event) => {
-      if (!dragging.current) return;
+    const move = (e) => {
+      if (!dragging.current) {
+        return;
+      }
 
       setPos({
-        x: Math.max(10, event.clientX - dragOffset.current.x),
-        y: Math.max(50, event.clientY - dragOffset.current.y),
+        x: Math.max(10, e.clientX - offset.current.x),
+        y: Math.max(50, e.clientY - offset.current.y),
       });
     };
 
@@ -68,7 +79,8 @@ function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
         className="flex items-center justify-between px-3 py-2 border-b select-none"
         style={{
           borderColor: "var(--border-color)",
-          backgroundColor: "color-mix(in srgb, var(--paper) 60%, transparent)",
+          backgroundColor:
+            "color-mix(in srgb, var(--paper) 60%, transparent)",
         }}
       >
         <div className="flex items-center gap-1.5 text-[10px] font-system uppercase tracking-wider font-bold">
@@ -85,7 +97,9 @@ function DraggableWidget({ id, title, icon: Icon, initialPos, children }) {
         </button>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col">{children}</div>
+      <div className="p-3 flex-1 flex flex-col">
+        {children}
+      </div>
     </div>
   );
 }
@@ -98,9 +112,11 @@ export default function Desktop({ children }) {
   const [note, setNote] = useState(() => {
     const saved = localStorage.getItem("aether_scratchpad_note");
 
-    return saved !== null
-      ? JSON.parse(saved)
-      : "• Review CS project builds\n• Update web OS components\n• Draft daily study notes";
+    if (saved !== null) {
+      return JSON.parse(saved);
+    }
+
+    return "• Review CS project builds\n• Update web OS components\n• Draft daily study notes";
   });
 
   const [newTask, setNewTask] = useState("");
@@ -108,25 +124,33 @@ export default function Desktop({ children }) {
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem("aether_daily_tasks");
 
-    return saved !== null
-      ? JSON.parse(saved)
-      : [
-          { id: 1, text: "Fix window drag transitions", done: true },
-          { id: 2, text: "Theme terminal light mode", done: true },
-          {
-            id: 3,
-            text: "Configure desktop productivity widgets",
-            done: false,
-          },
-        ];
+    if (saved !== null) {
+      return JSON.parse(saved);
+    }
+
+    return [
+      { id: 1, text: "Fix window drag transitions", done: true },
+      { id: 2, text: "Theme terminal light mode", done: true },
+      {
+        id: 3,
+        text: "Configure desktop productivity widgets",
+        done: false,
+      },
+    ];
   });
 
   useEffect(() => {
-    localStorage.setItem("aether_scratchpad_note", JSON.stringify(note));
+    localStorage.setItem(
+      "aether_scratchpad_note",
+      JSON.stringify(note)
+    );
   }, [note]);
 
   useEffect(() => {
-    localStorage.setItem("aether_daily_tasks", JSON.stringify(tasks));
+    localStorage.setItem(
+      "aether_daily_tasks",
+      JSON.stringify(tasks)
+    );
   }, [tasks]);
 
   useEffect(() => {
@@ -139,7 +163,7 @@ export default function Desktop({ children }) {
     }
 
     const timer = setInterval(() => {
-      setSecondsLeft((current) => current - 1);
+      setSecondsLeft((seconds) => seconds - 1);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -151,44 +175,65 @@ export default function Desktop({ children }) {
 
   const resetTimer = () => {
     setIsActive(false);
-    setSecondsLeft(timerMode === "work" ? 25 * 60 : 5 * 60);
+
+    if (timerMode === "work") {
+      setSecondsLeft(25 * 60);
+    } else {
+      setSecondsLeft(5 * 60);
+    }
   };
 
   const switchMode = (mode) => {
     setTimerMode(mode);
     setIsActive(false);
-    setSecondsLeft(mode === "work" ? 25 * 60 : 5 * 60);
+
+    if (mode === "work") {
+      setSecondsLeft(25 * 60);
+    } else {
+      setSecondsLeft(5 * 60);
+    }
   };
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    const secs = seconds % 60;
 
-    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  const toggleTask = (id) => {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task
-      )
+    return (
+      minutes.toString().padStart(2, "0") +
+      ":" +
+      secs.toString().padStart(2, "0")
     );
   };
 
-  const addTask = (event) => {
-    event.preventDefault();
+  const toggleTask = (id) => {
+    setTasks((tasks) =>
+      tasks.map((task) => {
+        if (task.id === id) {
+          return {
+            ...task,
+            done: !task.done,
+          };
+        }
+
+        return task;
+      })
+    );
+  };
+
+  const addTask = (e) => {
+    e.preventDefault();
 
     const text = newTask.trim();
 
-    if (!text) return;
+    if (!text) {
+      return;
+    }
 
-    setTasks((currentTasks) => [
-      ...currentTasks,
+    setTasks((tasks) => [
+      ...tasks,
       {
         id: Date.now(),
-        text,
+        text: text,
         done: false,
       },
     ]);
@@ -197,8 +242,8 @@ export default function Desktop({ children }) {
   };
 
   const deleteTask = (id) => {
-    setTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== id)
+    setTasks((tasks) =>
+      tasks.filter((task) => task.id !== id)
     );
   };
 
@@ -315,7 +360,7 @@ export default function Desktop({ children }) {
       >
         <textarea
           value={note}
-          onChange={(event) => setNote(event.target.value)}
+          onChange={(e) => setNote(e.target.value)}
           className="w-full h-28 bg-transparent resize-none outline-none font-mono text-xs leading-relaxed border p-2"
           style={{
             borderColor: "var(--border-color)",
@@ -335,7 +380,7 @@ export default function Desktop({ children }) {
           <input
             type="text"
             value={newTask}
-            onChange={(event) => setNewTask(event.target.value)}
+            onChange={(e) => setNewTask(e.target.value)}
             placeholder="Add target..."
             className="flex-1 bg-transparent border px-2 py-1 text-xs font-system outline-none"
             style={{
@@ -391,3 +436,4 @@ export default function Desktop({ children }) {
     </div>
   );
 }
+

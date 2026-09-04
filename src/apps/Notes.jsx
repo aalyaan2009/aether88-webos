@@ -23,7 +23,7 @@ export default function Notes() {
 
       <textarea
         value={notes}
-        onChange={(event) => setNotes(event.target.value)}
+        onChange={(e) => setNotes(e.target.value)}
         placeholder="Begin writing..."
         className="flex-1 w-full resize-none border border-current bg-transparent p-5 outline-none font-editorial text-lg leading-relaxed"
       />
@@ -34,3 +34,4 @@ export default function Notes() {
     </div>
   );
 }
+

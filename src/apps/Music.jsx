@@ -11,13 +11,19 @@ export default function Music() {
   const track = tracks[currentTrack];
 
   const previousTrack = () => {
-    setCurrentTrack((current) =>
-      current === 0 ? tracks.length - 1 : current - 1
-    );
+    if (currentTrack === 0) {
+      setCurrentTrack(tracks.length - 1);
+    } else {
+      setCurrentTrack(currentTrack - 1);
+    }
   };
 
   const nextTrack = () => {
-    setCurrentTrack((current) => (current + 1) % tracks.length);
+    if (currentTrack === tracks.length - 1) {
+      setCurrentTrack(0);
+    } else {
+      setCurrentTrack(currentTrack + 1);
+    }
   };
 
   return (
@@ -82,3 +88,5 @@ export default function Music() {
     </div>
   );
 }
+
+

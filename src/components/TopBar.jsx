@@ -14,10 +14,6 @@ export default function TopBar({ dark, setDark, openLauncher }) {
     minute: "2-digit",
   });
 
-  const toggleDarkMode = () => {
-    setDark(!dark);
-  };
-
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 h-14 border-b backdrop-blur-xl flex items-center justify-between px-5"
@@ -57,7 +53,7 @@ export default function TopBar({ dark, setDark, openLauncher }) {
         </button>
 
         <button
-          onClick={toggleDarkMode}
+          onClick={() => setDark(!dark)}
           className="border px-3 py-1.5 text-xs font-system uppercase tracking-wider hover:bg-[#c85a32] hover:text-white transition"
         >
           {dark ? (

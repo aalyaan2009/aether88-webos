@@ -16,51 +16,59 @@ export default function Terminal({ openApp }) {
   }, [history]);
 
   const runCommand = (command) => {
-    switch (command.toLowerCase()) {
-      case "help":
-        return [
-          "Available commands:",
-          "",
-          "help       Show this message",
-          "clear      Clear terminal",
-          "date       Current date",
-          "apps       List applications",
-          "open X     Open application",
-          "whoami     Current user",
-          "version    OS version",
-        ];
+    let cmd = command.toLowerCase();
 
-      case "date":
-        return [new Date().toString()];
-
-      case "apps":
-        return ["45 applications installed."];
-
-      case "whoami":
-        return ["guest@aether"];
-
-      case "version":
-        return ["AETHER OS 1.0.0"];
-
-      default:
-        if (command.toLowerCase().startsWith("open ")) {
-          const appName = command.substring(5).trim();
-
-          openApp(appName.toLowerCase().replaceAll(" ", "-"));
-
-          return [`Launching ${appName}...`];
-        }
-
-        return [`Command not found: ${command}`];
+    if (cmd === "help") {
+      return [
+        "Available commands:",
+        "",
+        "help       Show this message",
+        "clear      Clear terminal",
+        "date       Current date",
+        "apps       List applications",
+        "open X     Open application",
+        "whoami     Current user",
+        "version    OS version",
+      ];
     }
+
+    if (cmd === "date") {
+      return [new Date().toString()];
+    }
+
+    if (cmd === "apps") {
+      return ["45 applications installed."];
+    }
+
+    if (cmd === "whoami") {
+      return ["guest@aether"];
+    }
+
+    if (cmd === "version") {
+      return ["AETHER OS 1.0.0"];
+    }
+
+    if (cmd.startsWith("open ")) {
+      const appName = command.substring(5).trim();
+
+      openApp(appName.toLowerCase().replaceAll(" ", "-"));
+
+      return [`Launching ${appName}...`];
+    }
+
+    return [`Command not found: ${command}`];
   };
 
   const execute = (event) => {
-    if (event.key !== "Enter") return;
+    if (event.key !== "Enter") {
+      return;
+    }
 
     const command = input.trim();
 
-    if (!command) return;
+    if (!command) {
+      return;
+    }
 
     if (command.toLowerCase() === "clear") {
       setHistory([]);
@@ -70,8 +78,8 @@ export default function Terminal({ openApp }) {
 
     const output = runCommand(command);
 
-    setHistory((currentHistory) => [
-      ...currentHistory,
+    setHistory((current) => [
+      ...current,
       `guest@aether:~$ ${command}`,
       ...output,
     ]);
@@ -104,7 +112,7 @@ export default function Terminal({ openApp }) {
         <input
           autoFocus
           value={input}
-          onChange={(event) => setInput(event.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={execute}
           className="flex-1 bg-transparent outline-none border-none font-mono"
           style={{ color: "var(--ink)" }}
@@ -115,3 +123,4 @@ export default function Terminal({ openApp }) {
     </div>
   );
 }
+

@@ -3,25 +3,6 @@ import { useState } from "react";
 export default function Calculator() {
   const [value, setValue] = useState("");
 
-  const calculate = () => {
-    try {
-      const expression = value.trim();
-
-      if (!/^[0-9+\-*/().% ]+$/.test(expression)) {
-        setValue("ERROR");
-        return;
-      }
-
-      const result = Function(
-        `"use strict"; return (${expression})`
-      )();
-
-      setValue(String(result));
-    } catch {
-      setValue("ERROR");
-    }
-  };
-
   const buttons = [
     "7", "8", "9", "/",
     "4", "5", "6", "*",
@@ -30,18 +11,31 @@ export default function Calculator() {
     "C", "=",
   ];
 
-  const handleButtonClick = (button) => {
-    if (button === "C") {
+  const calculate = () => {
+    let exp = value.trim();
+
+    if (!exp) {
+      setValue("ERROR");
+      return;
+    }
+
+    try {
+      let result = Function("return " + exp)();
+      setValue(String(result));
+    } catch (err) {
+      console.error(err);
+      setValue("ERROR");
+    }
+  };
+
+  const handleButtonClick = (btn) => {
+    if (btn === "C") {
       setValue("");
-      return;
-    }
-
-    if (button === "=") {
+    } else if (btn === "=") {
       calculate();
-      return;
+    } else {
+      setValue(value + btn);
     }
-
-    setValue(value + button);
   };
 
   return (
@@ -51,16 +45,17 @@ export default function Calculator() {
       </div>
 
       <div className="grid grid-cols-4 gap-1">
-        {buttons.map((button) => (
+        {buttons.map((btn) => (
           <button
-            key={button}
-            onClick={() => handleButtonClick(button)}
+            key={btn}
+            onClick={() => handleButtonClick(btn)}
             className="border p-4 font-system hover:bg-[#c85a32] hover:text-white transition"
           >
-            {button}
+            {btn}
           </button>
         ))}
       </div>
     </div>
   );
 }
+

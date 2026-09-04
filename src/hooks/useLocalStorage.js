@@ -5,12 +5,13 @@ export function useLocalStorage(key, initialValue) {
     try {
       const saved = localStorage.getItem(key);
 
-      if (saved === null) {
-        return initialValue;
+      if (saved) {
+        return JSON.parse(saved);
       }
 
-      return JSON.parse(saved);
-    } catch {
+      return initialValue;
+    } catch (err) {
+      console.error(err);
       return initialValue;
     }
   });
@@ -18,8 +19,8 @@ export function useLocalStorage(key, initialValue) {
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-     
+    } catch (err) {
+      console.error(err);
     }
   }, [key, value]);
 
