@@ -8,7 +8,9 @@ export default function Clock() {
       setDate(new Date());
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const time = date.toLocaleTimeString(undefined, {
@@ -40,4 +42,3 @@ export default function Clock() {
     </div>
   );
 }
-

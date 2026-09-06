@@ -10,21 +10,21 @@ export default function Music() {
   const [currentTrack, setCurrentTrack] = useState(0);
   const track = tracks[currentTrack];
 
-  const previousTrack = () => {
+  function previousTrack() {
     if (currentTrack === 0) {
       setCurrentTrack(tracks.length - 1);
     } else {
       setCurrentTrack(currentTrack - 1);
     }
-  };
+  }
 
-  const nextTrack = () => {
+  function nextTrack() {
     if (currentTrack === tracks.length - 1) {
       setCurrentTrack(0);
     } else {
       setCurrentTrack(currentTrack + 1);
     }
-  };
+  }
 
   return (
     <div className="flex h-full flex-col gap-5">
@@ -70,23 +70,25 @@ export default function Music() {
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        {tracks.map((item, index) => (
-          <button
-            key={item.title}
-            onClick={() => setCurrentTrack(index)}
-            className={`flex items-center justify-between border px-3 py-2 text-left font-system text-[10px] uppercase tracking-[0.15em] transition ${
-              index === currentTrack
-                ? "bg-[#c85a32] text-white"
-                : "hover:bg-[#171717]/5"
-            }`}
-          >
-            <span>{item.title}</span>
-            <span>{item.duration}</span>
-          </button>
-        ))}
+        {tracks.map((item, index) => {
+          const isPlaying = index === currentTrack;
+
+          return (
+            <button
+              key={item.title}
+              onClick={() => setCurrentTrack(index)}
+              className={`flex items-center justify-between border px-3 py-2 text-left font-system text-[10px] uppercase tracking-[0.15em] transition ${
+                isPlaying
+                  ? "bg-[#c85a32] text-white"
+                  : "hover:bg-[#171717]/5"
+              }`}
+            >
+              <span>{item.title}</span>
+              <span>{item.duration}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
-
-

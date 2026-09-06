@@ -17,12 +17,12 @@ export default function Browser() {
     { name: "DuckDuckGo", url: "https://duckduckgo.com" },
   ];
 
-  const handleNavigate = (e) => {
+  function handleNavigate(e) {
     if (e) {
       e.preventDefault();
     }
 
-    let input = url.trim();
+    const input = url.trim();
 
     if (!input) {
       return;
@@ -30,6 +30,7 @@ export default function Browser() {
 
     let link = input;
 
+    
     if (!input.startsWith("http://") && !input.startsWith("https://")) {
       if (input.includes(".")) {
         link = "https://" + input;
@@ -41,73 +42,127 @@ export default function Browser() {
     }
 
     window.open(link, "_blank", "noopener,noreferrer");
-  };
+  }
 
   return (
     <div
-      className="h-full flex flex-col p-4 font-system select-text"
-      style={{ color: "var(--ink)" }}
+      className="h-full flex flex-col p-4 font-sans text-xs select-text"
+      style={{ color: "var(--text-primary)" }}
     >
+      
       <form onSubmit={handleNavigate} className="flex gap-2 mb-4">
         <div
-          className="flex-1 flex items-center gap-2 border px-3 py-1.5 rounded-lg bg-[var(--paper)]"
-          style={{ borderColor: "var(--border-color)" }}
+          className="flex-1 flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] border transition-colors"
+          style={{
+            backgroundColor: "var(--bg-surface)",
+            borderColor: "var(--border-subtle)",
+          }}
         >
-          <Globe size={14} className="opacity-50" />
+          <Globe
+            size={14}
+            className="shrink-0 opacity-50"
+            style={{ color: "var(--text-secondary)" }}
+          />
 
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="Search Web or Enter URL..."
+            placeholder="Search web or enter URL..."
             className="flex-1 bg-transparent text-xs outline-none"
+            style={{ color: "var(--text-primary)" }}
+            onFocus={(e) =>
+              (e.currentTarget.parentElement.style.borderColor =
+                "var(--border-strong)")
+            }
+            onBlur={(e) =>
+              (e.currentTarget.parentElement.style.borderColor =
+                "var(--border-subtle)")
+            }
           />
         </div>
 
         <button
           type="submit"
-          className="px-3 py-1.5 border text-xs flex items-center gap-1 rounded-lg hover:bg-[var(--accent)] hover:text-white transition-colors"
-          style={{ borderColor: "var(--border-color)" }}
+          className="px-3 py-1.5 text-xs flex items-center gap-1.5 rounded-[var(--radius-sm)] font-medium transition-colors border cursor-pointer"
+          style={{
+            backgroundColor: "var(--bg-surface)",
+            borderColor: "var(--border-subtle)",
+            color: "var(--text-primary)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--bg-surface-hover)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--bg-surface)";
+          }}
         >
           <span>Go</span>
-          <ArrowRight size={12} />
+          <ArrowRight size={13} />
         </button>
       </form>
 
+      
       <div
-        className="flex-1 border border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3"
-        style={{ borderColor: "var(--border-color)" }}
+        className="flex-1 rounded-[var(--radius-md)] p-6 flex flex-col items-center justify-center text-center gap-3 border"
+        style={{
+          backgroundColor: "var(--bg-surface)",
+          borderColor: "var(--border-subtle)",
+        }}
       >
-        <Globe size={36} className="opacity-40 animate-pulse" />
+        <div
+          className="w-12 h-12 rounded-full flex items-center justify-center border shrink-0"
+          style={{
+            backgroundColor: "var(--bg-window)",
+            borderColor: "var(--border-subtle)",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <Globe size={22} />
+        </div>
 
-        <h3 className="text-sm font-bold tracking-wider uppercase">
-          External Web Gateway
-        </h3>
+        <div className="space-y-1 max-w-sm">
+          <h3
+            className="text-sm font-semibold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
+            External Page Navigation
+          </h3>
 
-        <p className="text-xs opacity-70 max-w-sm leading-relaxed">
-          To bypass browser iframe block rules, navigation redirects external
-          sites directly to a clean target tab.
-        </p>
+          <p
+            className="text-xs leading-relaxed opacity-70"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Websites open in a new tab to bypass iframe security restrictions and maintain optimal site functionality.
+          </p>
+        </div>
 
         <button
           onClick={handleNavigate}
-          className="mt-2 px-4 py-2 bg-[var(--accent)] text-white text-xs font-bold uppercase tracking-wider rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity"
+          className="mt-1 px-4 py-2 text-white text-xs font-medium rounded-[var(--radius-sm)] flex items-center gap-2 transition-opacity cursor-pointer"
+          style={{ backgroundColor: "var(--accent)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
         >
-          <span>Open Destination Tab</span>
-          <ExternalLink size={14} />
+          <span>Open in new tab</span>
+          <ExternalLink size={13} />
         </button>
       </div>
 
+     
       <div
         className="mt-4 pt-3 border-t"
-        style={{ borderColor: "var(--border-color)" }}
+        style={{ borderColor: "var(--border-subtle)" }}
       >
-        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider opacity-60 mb-2">
-          <Bookmark size={12} />
-          Quick Links
+        <div
+          className="flex items-center gap-1.5 text-xs font-medium mb-2.5 opacity-70"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          <Bookmark size={13} />
+          <span>Quick Links</span>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {bookmarks.map((item) => (
             <button
               key={item.name}
@@ -115,8 +170,21 @@ export default function Browser() {
                 setUrl(item.url);
                 window.open(item.url, "_blank", "noopener,noreferrer");
               }}
-              className="px-2.5 py-1 border text-[11px] rounded-md hover:bg-[var(--accent)] hover:text-white transition-colors"
-              style={{ borderColor: "var(--border-color)" }}
+              className="px-3 py-1.5 text-xs rounded-[var(--radius-sm)] border transition-colors cursor-pointer"
+              style={{
+                backgroundColor: "var(--bg-surface)",
+                borderColor: "transparent",
+                color: "var(--text-primary)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  "var(--bg-surface-hover)";
+                e.currentTarget.style.borderColor = "var(--border-subtle)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--bg-surface)";
+                e.currentTarget.style.borderColor = "transparent";
+              }}
             >
               {item.name}
             </button>
@@ -126,4 +194,3 @@ export default function Browser() {
     </div>
   );
 }
-

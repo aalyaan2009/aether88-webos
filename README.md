@@ -1,5 +1,5 @@
 # Aether88 WebOS - Minimalist Web Operating System
-Aether 88 WebOS is a retro inspired desktop styled web application built to simulate an interactive operating system environment with draggable productivity widgets, persistent storage and quick application shorcuts.
+Aether88 WebOS is a retro inspired desktop styled web application built to show an interactive operating system environment with draggable productivity widgets, persistent storage and quick application shorcuts.
 
 ---
 
@@ -8,8 +8,8 @@ Aether 88 WebOS is a retro inspired desktop styled web application built to simu
 * **Draggable Productivity Widgets**: Moveable Window Widgets for customized workspace organization with built in position memory.
 * **Focus Chronometer**: Pomodoro timer with customizable focus and break intervals to support pomodoro study techniques.
 * **Daily Target System**: Interacting task tracking for writing and completing daily tasks and goals
-* **Persistent Local Storage**: Built in session memory utilizing the browser's `localStorage` API to ensure user data including widget and window positions remains saved across browser sessions.
-* **Minimalist UI/UX**: Lightweight aesthetic styling powered by Tailwind CSS v4 with custom variable themes 
+* **Persistent Local Storage**: Built in session memory utilizing the browser's localStorage API to ensure user data including widget and window positions remains saved in browser sessions.
+* **Minimalist UI/UX**: Lightweight aesthetic styling powered by Tailwind CSS with custom variable themes 
 
 ---
 
@@ -56,7 +56,7 @@ To run this project locally on your machine:
 
 ### Artificial Intelligence Disclosure
 
-* **AI Assistance**: Gemini was utilized during development as collaborative debugging assistants.
+* **AI Assistance**: Gemini was utilized during development as collaborative debugging assistant.
 * **AI Scope**: AI was used for troubleshooting Vite build configurations, resolving relative path deployment routing on GitHub Pages.
 ---
 ### Credits & Acknowledgments

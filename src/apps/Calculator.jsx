@@ -11,8 +11,8 @@ export default function Calculator() {
     "C", "=",
   ];
 
-  const calculate = () => {
-    let exp = value.trim();
+  function calculate() {
+    const exp = value.trim();
 
     if (!exp) {
       setValue("ERROR");
@@ -20,15 +20,15 @@ export default function Calculator() {
     }
 
     try {
-      let result = Function("return " + exp)();
+      const result = Function("return " + exp)();
       setValue(String(result));
     } catch (err) {
       console.error(err);
       setValue("ERROR");
     }
-  };
+  }
 
-  const handleButtonClick = (btn) => {
+  function handleClick(btn) {
     if (btn === "C") {
       setValue("");
     } else if (btn === "=") {
@@ -36,26 +36,85 @@ export default function Calculator() {
     } else {
       setValue(value + btn);
     }
-  };
+  }
 
   return (
-    <div className="max-w-sm mx-auto">
-      <div className="border p-5 mb-3 text-right font-system text-3xl min-h-20 break-all">
-        {value || "0"}
+    <div className="max-w-sm mx-auto h-full flex flex-col justify-center p-4 select-text font-sans">
+      
+      <div
+        className="p-5 mb-4 text-right text-3xl font-mono tabular-nums min-h-[5rem] flex items-center justify-end break-all rounded-[var(--radius-md)] border transition-colors"
+        style={{
+          backgroundColor: "var(--bg-surface)",
+          borderColor: "var(--border-subtle)",
+          color: "var(--text-primary)",
+        }}
+      >
+        <span className={value ? "opacity-100" : "opacity-40"}>
+          {value || "0"}
+        </span>
       </div>
 
-      <div className="grid grid-cols-4 gap-1">
-        {buttons.map((btn) => (
-          <button
-            key={btn}
-            onClick={() => handleButtonClick(btn)}
-            className="border p-4 font-system hover:bg-[#c85a32] hover:text-white transition"
-          >
-            {btn}
-          </button>
-        ))}
+      
+      <div className="grid grid-cols-4 gap-2">
+        {buttons.map((btn) => {
+          const isOperator = ["/", "*", "-", "+", "%"].includes(btn);
+          const isClear = btn === "C";
+          const isEquals = btn === "=";
+
+          let bg = "var(--bg-surface)";
+          let color = "var(--text-primary)";
+          let fontWeight = "400";
+
+          if (isEquals) {
+            bg = "var(--accent)";
+            color = "#ffffff";
+            fontWeight = "600";
+          } else if (isClear) {
+            color = "var(--destructive, #ef4444)";
+            fontWeight = "600";
+          } else if (isOperator) {
+            bg = "var(--bg-surface-hover)";
+            color = "var(--accent, var(--text-primary))";
+            fontWeight = "600";
+          }
+
+          return (
+            <button
+              key={btn}
+              onClick={() => handleClick(btn)}
+              className={`p-4 text-sm rounded-[var(--radius-sm)] transition-all cursor-pointer outline-none active:scale-[0.97] ${
+                isEquals || isClear ? "col-span-2" : "col-span-1"
+              }`}
+              style={{
+                backgroundColor: bg,
+                color: color,
+                fontWeight: fontWeight,
+              }}
+              onMouseEnter={(e) => {
+                if (isEquals) {
+                  e.currentTarget.style.opacity = "0.9";
+                } else {
+                  e.currentTarget.style.backgroundColor =
+                    "var(--bg-surface-hover)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isEquals) {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.backgroundColor = "var(--accent)";
+                } else if (isOperator) {
+                  e.currentTarget.style.backgroundColor =
+                    "var(--bg-surface-hover)";
+                } else {
+                  e.currentTarget.style.backgroundColor = "var(--bg-surface)";
+                }
+              }}
+            >
+              {btn}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
-
