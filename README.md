@@ -20,7 +20,7 @@ Aether88 WebOS is a retro inspired desktop styled web application built to show 
 * **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & [Framer Motion](https://www.framer.com/motion/)
 * **Icons**: [Lucide React](https://lucide.dev/)
 * **Linter**: [Oxlint](https://oxc.rs/)
-* **Deployment**: [GitHub Pages](https://pages.github.com/) (`gh-pages`)
+* **Deployment**: [GitHub Pages](https://pages.github.com/) (gh-pages)
 
 ---
 
