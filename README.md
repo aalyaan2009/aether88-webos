@@ -20,7 +20,7 @@ Aether88 WebOS is a retro inspired desktop styled web application built to show 
 * **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & [Framer Motion](https://www.framer.com/motion/)
 * **Icons**: [Lucide React](https://lucide.dev/)
 * **Linter**: [Oxlint](https://oxc.rs/)
-* **Deployment**: [GitHub Pages](https://pages.github.com/) (gh-pages)
+* **Deployment**: [GitHub Pages](https://pages.github.com/) (`gh-pages`)
 
 ---
 
@@ -38,21 +38,13 @@ You can access the deployed application here: **[Aether88 WebOS Live Application
 
 ## Local Development Setup
 
-To run this project locally on your machine:
+To run this project locally on your system:
 
 1. **Clone the repository**:
    ```bash
    git clone [https://github.com/aalyaan2009/aether88-webos.git](https://github.com/aalyaan2009/aether88-webos.git)
    cd aether88-webos
-2. **Install dependencies:**
-   ```bash
-   npm install
-3. **Start the development server:**
-   ```bash
-   npm run dev
-4. **Build for production:**
-   ```bash
-   npm run build
+
 
 ### Artificial Intelligence Disclosure
 

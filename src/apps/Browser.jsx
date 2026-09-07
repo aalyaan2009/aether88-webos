@@ -194,3 +194,4 @@ export default function Browser() {
     </div>
   );
 }
+
