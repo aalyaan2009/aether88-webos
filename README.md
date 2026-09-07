@@ -42,7 +42,7 @@ To run this project locally on your system:
 
 1. **Clone the repository**:
    ```bash
-   git clone [https://github.com/aalyaan2009/aether88-webos.git](https://github.com/aalyaan2009/aether88-webos.git)
+   git clone [https://github.com/aalyaan2009/aether88-webos.git]
    cd aether88-webos
 
 
